@@ -1,17 +1,11 @@
-# Leírás #
-
-Szükséges programok:
-# #
+#Required applications:
 Composer
 # #
-Bower (amihez kell NodeJS)
+Bower (and NodeJS)
 # #
-# Telepítés: #
-Apache-ot irányítsd a projekt public mappájára
+# Preparation: #
+Like most of the frameworks, we are using the ./public folder as root. You need to set that in your Apache config.
 # #
-A projekt gyökerében: composer install
+Install dependecies in the root folder with the following command: composer install
 # #
-A public mappában: bower install
-# #
-# Létező url: #
-domain/calendar
+After that, install some JS frameworks with: bower install
