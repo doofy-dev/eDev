@@ -1,0 +1,33 @@
+routes:
+  main:
+    route: "/"
+    controller: "application"
+    action: "index"
+
+  dynamic:
+    route: "/:action[.:type](/)?$"
+    controller: "application"
+    constraint:
+      type: "(html|txt)"
+      action: "(login|logout|dashboard|calendar)"
+    default:
+      action: "index"
+      constraint:
+        type: "html"
+
+invokable:
+  auth: "Application\Controller\Auth"
+  dashboard: "Application\Controller\Dashboard"
+  application: "Application\Controller\Application"
+
+view:
+  error/404: "Application/view/error/404.phtml"
+  application/index: "Application/view/index.phtml"
+  application/text: "Application/view/text.phtml"
+  application/error: "Application/view/error/error.phtml"
+
+  application: "Application/view/application.phtml"
+
+  application/layout: "Application/view/layout.phtml"
+
+  application/auth: "Application/view/auth.phtml"

@@ -1,0 +1,22 @@
+<?php
+if ($this->error_type == 'error'):?>
+	<h1>Error during the execution!</h1>
+	<pre>
+	<h3>Stack trace:</h3>
+		<?php foreach ($this->error as $err) {
+			echo $err . '<br><br>';
+		}
+		?>
+	</pre>
+<?php endif ?>
+<?php if ($this->error_type == 'notSupported'): ?>
+	<h3><?=$this->translate('Not supported!');?></h3>
+	<h5>The requested action is not supported by this routing!</h5>
+<?php endif ?>
+<?php if ($this->error_type == '404'): ?>
+	<h2>404 NOT FOUND</h2>
+	<h4>The requested url is not matched by the routing!</h4>
+<?php endif ?>
+<?php
+echo $this->backtrace();
+?>

@@ -1,0 +1,5 @@
+reload autoload
+composer dump-autoload
+
+encription: https://github.com/archwisp/PHPEncryptData
+doctrine: http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/getting-started.html

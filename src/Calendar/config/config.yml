@@ -1,0 +1,7 @@
+routes:
+
+invokable:
+  calendar: "Calendar\Controller\Calendar"
+
+view:
+  calendar/container: "Calendar/view/container.phtml"

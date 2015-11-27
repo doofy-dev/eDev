@@ -1,0 +1,99 @@
+/**
+* Hide when Angular is not yet loaded and initialized
+*/
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+	display: none !important;
+}
+
+html, body {
+	font-family: 'Roboto', sans-serif;
+	font-size:14px;
+	height:100%;
+	margin: 0px;
+	padding: 0px;
+}
+
+/* Toolbar area */
+
+
+md-toolbar h1 {
+	margin: auto;
+}
+
+/* Sidenav area */
+
+md-list .md-button {
+	color: inherit;
+	font-weight: 500;
+	text-align: left;
+	width: 100%;
+}
+md-list .md-button.selected {
+	color: #03a9f4;
+}
+md-item-content{
+	height:50px;
+}
+/* Primary content area */
+
+#content {
+	overflow: hidden;
+}
+
+#content  {
+	padding-left: 40px;
+	padding-right: 40px;
+	padding-top: 5px;
+}
+
+
+#content img {
+	display: block;
+	height: auto;
+	max-width: 500px;
+}
+
+/* Utils */
+
+.content-wrapper {
+	position: relative;
+}
+.inset>ng-md-icon>svg{
+	margin-top: 12px;
+}
+.child-menu{
+	padding-left: 30px;
+}
+.profile-section .picture{
+	display: inline-block;
+	width: 64px;
+	height: 60px;
+	margin-top: 20px;
+	overflow: hidden;
+	border-radius: 50% !important;
+}
+.profile-section .basic-info{
+	display: inline-block;
+	width: 180px;
+	font-size: 0.8em;
+	margin-top: -50px;
+	margin-left: 80px;
+}
+.fab-add{
+	background: rgb(255, 95, 103) !important;
+}
+.save-time-details{
+	margin-right: -15px;
+}
+.save-time-details svg{
+	padding-top: 10px;
+}
+@media screen and (max-width: 800px){
+	.md-padding{
+		padding: 0 !important;
+	}
+	#content  {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+}

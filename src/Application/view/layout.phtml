@@ -1,0 +1,32 @@
+<?= $this->doctype() ?>
+<html lang="hu">
+<head>
+	<title><?=$this->globalConfig('website_name');?></title>
+	<?= $this->headMeta()
+			->appendName('viewport','initial-scale=1')
+			->appendName('charset','utf-8')
+			->prependCharset('utf-8')
+	?>
+
+	<?= $this->headLink()
+			->appendStylesheet('http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic')
+			->appendStylesheet('/bower_components/angular-material/angular-material.css')
+			->appendStylesheet('/css/style.css')
+	?>
+
+	<?= $this->headScript()
+			->prependFile('/js/application/Controller.js')
+			->prependFile('/js/application/app.js')
+			->prependFile('/bower_components/angular-animate/angular-animate.js')
+			->prependFile('/bower_components/angular-aria/angular-aria.js')
+			->prependFile('/bower_components/material-calendar/dist/angular-material-calendar.min.js')
+			->prependFile('/bower_components/angular-material/angular-material.js')
+			->prependFile('/bower_components/angular-material-icons/angular-material-icons.js')
+			->prependFile('/bower_components/angular-sanitize/angular-sanitize.js')
+			->prependFile('/bower_components/angular/angular.js')
+	?>
+</head>
+<body ng-app="eDev" layout="column" ng-controller="Application">
+<?= $this->content ?>
+</body>
+</html>

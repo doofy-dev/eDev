@@ -1,0 +1,42 @@
+<!--https://angular-material-calendar.bradb.net/-->
+<span ng-controller="calendarCtrl" layout="row" layout-sm="column">
+		<div flex layout-padding>
+			<calendar-md flex="100" layout layout-fill
+						 calendar-direction="direction"
+						 on-prev-month="prevMonth"
+						 on-next-month="nextMonth"
+						 on-day-click="dayClick"
+						 title-format="'y MMMM'"
+						 ng-model='selectedDate'
+						 week-starts-on="firstDayOfWeek"
+						 day-format="dayFormat"
+						 day-content="setDayContent"
+						 disable-future-selection="false"
+			</calendar-md>
+		</div>
+	<div flex layout-padding>
+		<div flex layout layout-fill style="padding: 0px !important;">
+			<md-content class="layout-fill ng-scope layout-column">
+				<md-toolbar>
+					<div class="md-toolbar-tools layout-row">
+						<div class="flex"></div>
+						<h2 class="calendar-md-title"><span>Részletek</span></h2>
+
+						<div class="flex" style="text-align: right">
+							<md-button class="flex save-time-details">
+								<ng-md-icon size="30" style="fill: rgba(255,255,255,0.87);" icon="check"></ng-md-icon>
+							</md-button>
+						</div>
+					</div>
+				</md-toolbar>
+				<md-content layout-padding layout="row" class="calendar ng-scope flex"
+							style="border: 1px solid rgba(0, 0, 0, 0.117647);">
+
+					<time-tracker flex ng-model="dayValues">
+					</time-tracker>
+				</md-content>
+			</md-content>
+		</div>
+	</div>
+
+</span>
