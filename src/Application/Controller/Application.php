@@ -43,7 +43,7 @@ class Application extends ActionController
 		$view = new ViewModel('application/index');
 
 		$view->addVariable('moduleName','Calendar');
-		$view->addVariable('body',$this->forward()->dispatch("Calendar\\Controller\\Calendar",array(
+		$view->addVariable('body',$this->forward()->dispatch("Calendar\\Controller\\CalendarController",array(
 			'action'=>'index'
 		)));
 		return $view;

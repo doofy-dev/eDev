@@ -43,6 +43,13 @@ class Calendar
     private $calendarDay;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="comment", type="text", length=65535, nullable=true)
+     */
+    private $comment;
+
+    /**
      * @var \Application\Entity\CalendarEntryType
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\CalendarEntryType")
@@ -61,30 +68,7 @@ class Calendar
      * })
      */
     private $user;
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="comment", type="string", nullable=true)
-     */
-    private $comment;
 
-    /**
-     * @return string
-     */
-    public function getComment()
-    {
-        return $this->comment;
-    }
-
-    /**
-     * @param string $comment
-     * @return $this
-     */
-    public function setComment($comment)
-    {
-        $this->comment = $comment;
-        return $this;
-    }
 
 
     /**
@@ -164,6 +148,29 @@ class Calendar
     public function getCalendarDay()
     {
         return $this->calendarDay;
+    }
+
+    /**
+     * Set comment
+     *
+     * @param string $comment
+     * @return Calendar
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Get comment
+     *
+     * @return string 
+     */
+    public function getComment()
+    {
+        return $this->comment;
     }
 
     /**

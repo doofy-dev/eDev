@@ -18,7 +18,7 @@ class CalendarRepository extends EntityRepository
 		$connection = $this->_em->createQueryBuilder();
 		$connection->select('c.calendarId, c.startTime, c.endTime, c.calendarDay, t.entryTypeId, c.comment')
 			->from('Application\\Entity\\Calendar', 'c')
-				->innerJoin('c.entryType','t')
+			->innerJoin('c.entryType','t')
 //				->setMaxResults(2)
 			->where('c.calendarDay > :start_date')
 			->andWhere('c.calendarDay < :end_date')
@@ -38,13 +38,13 @@ class CalendarRepository extends EntityRepository
 		for($i=0;$i<count($rows);$i++){
 			$rows[$i]['calendarDay']=$rows[$i]['calendarDay']->format('d');
 			$rows[$i]['start'] = array(
-					'hour'=>intval($rows[$i]['startTime']->format('H')),
-					'min'=>intval($rows[$i]['startTime']->format('i')),
+				'hour'=>intval($rows[$i]['startTime']->format('H')),
+				'min'=>intval($rows[$i]['startTime']->format('i')),
 			);
 			unset($rows[$i]['startTime']);
 			$rows[$i]['end'] = array(
-					'hour'=>intval($rows[$i]['endTime']->format('H')),
-					'min'=>intval($rows[$i]['endTime']->format('i')),
+				'hour'=>intval($rows[$i]['endTime']->format('H')),
+				'min'=>intval($rows[$i]['endTime']->format('i')),
 			);
 			unset($rows[$i]['endTime']);
 		}

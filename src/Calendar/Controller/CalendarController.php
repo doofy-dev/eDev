@@ -12,7 +12,7 @@ namespace Calendar\Controller;
 use decoy\base\ActionController;
 use decoy\view\ViewModel;
 
-class Calendar extends ActionController
+class CalendarController extends ActionController
 {
 	public function index(){
 		$this->setTemplate('application/text');

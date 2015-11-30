@@ -8,7 +8,7 @@ routes:
           action: "getdata"
 
 invokable:
-  calendar: "Calendar\Controller\Calendar"
+  calendar: "Calendar\Controller\CalendarController"
   calendarRest: "Calendar\Controller\CalendarRest"
 
 view:
