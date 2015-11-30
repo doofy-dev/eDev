@@ -68,16 +68,16 @@
 								<md-input-container flex>
 									<label>Projekt</label>
 									<md-select ng-model="value.project">
-										<md-option ng-repeat="project in projects" value="{{project.id}}">
-											{{project.label}}
+										<md-option ng-repeat="project in projects" ng-click="updateTasks(value,project)" value="{{project.projectId}}">
+											{{project.projectName}}
 										</md-option>
 									</md-select>
 								</md-input-container>
 								<md-input-container flex>
 									<label>Feladat</label>
 									<md-select ng-model="value.task">
-										<md-option ng-repeat="task in tasks" value="{{task.id}}">
-											{{task.label}}
+										<md-option ng-repeat="task in value.tasks" value="{{task.taskId}}">
+											{{task.taskName}}
 										</md-option>
 									</md-select>
 								</md-input-container>
@@ -87,7 +87,6 @@
 									<textarea ng-model="value.comment"></textarea>
 								</md-input-container>
 							</div>
-
 
 							<div flex layout="column">
 								<div flex layout="row">

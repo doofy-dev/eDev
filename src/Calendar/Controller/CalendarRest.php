@@ -15,7 +15,6 @@ class CalendarRest extends RestFulController
 {
 	public function getdata(){
 		if($this->getRequest()->isPost()){
-
 			$sent = $this->getApplication()->getRequestBody()->content;
 			$date = new \DateTime();
 			if(array_key_exists('date',$sent)){
@@ -37,5 +36,16 @@ class CalendarRest extends RestFulController
 	public function getprojects(){
 		$repo = $this->getEntityManager()->getRepository('Application\\Entity\\ProjectList');
 		return $repo->getProjectsForUser(1);
+	}
+
+	public function gettasks(){
+		if($this->getRequest()->isPost()) {
+			$sent = $this->getApplication()->getRequestBody()->content;
+			if(array_key_exists('userId',$sent) && array_key_exists('projectId',$sent)){
+				$repo = $this->getEntityManager()->getRepository('Application\\Entity\\ProjectTasks');
+				return $repo->getTaksList($sent['userId'],$sent['projectId']);
+			}
+		}
+		return array();
 	}
 }

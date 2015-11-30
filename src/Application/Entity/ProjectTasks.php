@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ProjectTasks
  *
- * @ORM\Table(name="project_tasks", indexes={@ORM\Index(name="pt_dependency_fk", columns={"project_dependence"}), @ORM\Index(name="pt_project_fk", columns={"project_id"})})
+ * @ORM\Table(name="project_tasks", indexes={@ORM\Index(name="pt_dependency_fk", columns={"project_dependence"}), @ORM\Index(name="pt_project_fk", columns={"project_id"}), @ORM\Index(name="pt_user_fk", columns={"user_id"})})
  * @ORM\Entity(repositoryClass="Application\Repository\ProjectTasksRepository")
  */
 class ProjectTasks
@@ -55,6 +55,15 @@ class ProjectTasks
      */
     private $project;
 
+    /**
+     * @var \Application\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="user_id")
+     * })
+     */
+    private $user;
 
 
     /**
@@ -158,4 +167,22 @@ class ProjectTasks
     {
         return $this->project;
     }
+
+	/**
+	 * @return User
+	 */
+	public function getUser()
+	{
+		return $this->user;
+	}
+
+	/**
+	 * @param User $user
+	 * @return $this
+	 */
+	public function setUser($user)
+	{
+		$this->user = $user;
+		return $this;
+	}
 }
