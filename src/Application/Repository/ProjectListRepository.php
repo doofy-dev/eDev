@@ -12,4 +12,17 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProjectListRepository extends EntityRepository
 {
+
+	public function getProjectsForUser($userID){
+		$connection = $this->_em->createQueryBuilder();
+
+		$connection->select('p.projectId, p.projectName')
+				->from('Application\\Entity\\ProjectUserMap','m')
+				->innerJoin('m.project', 'p')
+				->innerJoin('m.user','u')
+				->where('u.userId = :UID')
+				->setParameter('UID',$userID);
+		return $connection->getQuery()->getArrayResult();
+	}
+
 }

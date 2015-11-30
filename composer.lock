@@ -711,26 +711,38 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/teeebor/decoy-framework.git",
-                "reference": "f06f310bd4a9d7fc4c83727267905cf6f75ad0e9"
+                "reference": "2c5e4344cecf2be36a1c7435c3e108f74b69b014"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/teeebor/decoy-framework/zipball/f06f310bd4a9d7fc4c83727267905cf6f75ad0e9",
-                "reference": "f06f310bd4a9d7fc4c83727267905cf6f75ad0e9",
+                "url": "https://api.github.com/repos/teeebor/decoy-framework/zipball/2c5e4344cecf2be36a1c7435c3e108f74b69b014",
+                "reference": "2c5e4344cecf2be36a1c7435c3e108f74b69b014",
                 "shasum": ""
             },
             "require": {
                 "doctrine/orm": "2.4.*",
+                "php": ">=5.5",
                 "symfony/yaml": "2.*"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "decoy\\": "/"
+                    "decoy\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2015-11-27 09:38:03"
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tibor Tálosi",
+                    "email": "tibor.talosi@gmail.com",
+                    "homepage": "http://github.com/teeebor",
+                    "role": "Developer"
+                }
+            ],
+            "time": "2015-11-30 15:13:23"
         }
     ],
     "packages-dev": [],

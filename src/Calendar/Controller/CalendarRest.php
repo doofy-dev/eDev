@@ -33,4 +33,9 @@ class CalendarRest extends RestFulController
 		$repo = $this->getEntityManager()->getRepository('Application\\Entity\\CalendarEntryType');
 		return $repo->getList();
 	}
+
+	public function getprojects(){
+		$repo = $this->getEntityManager()->getRepository('Application\\Entity\\ProjectList');
+		return $repo->getProjectsForUser(1);
+	}
 }
