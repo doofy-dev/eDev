@@ -3,6 +3,77 @@
  */
 
 app.controller("calendarCtrl", function($scope, $filter, $http, $q) {
+	$scope.current_day = "Nincs kiválasztva";
+	$scope.dateContent = [
+		//{
+		//	name:'VMI',
+		//	start:{
+		//		hour:8,
+		//		min:30
+		//	},
+		//	end:{
+		//		hour:16,
+		//		min:30
+		//	},
+		//	type: 1,
+		//	project: 1,
+		//	task:1,
+		//	comment: 'ASD'
+		//}
+	];
+	$scope.database = [];
+	var date = Date.now();
+	$scope.$parent.isLoading = true;
+	$http({
+		method: 'POST',
+		url: './calendar/getData',
+		data:{
+			date:$filter("date")(date, "y-MM-")+'00'
+		}
+	}).then(function(response){
+		$scope.$parent.isLoading = false;
+		$scope.database = response.data;
+		console.log(response.data);
+	});
+	$scope.dayTypes = [
+
+		{
+			id:1,
+			label:'EFF'
+		},
+		{
+			id:2,
+			label:'Attr'
+		}
+	];
+	$scope.projects = [
+
+		{
+			id:1,
+			label:'SmartCity'
+		},
+		{
+			id:2,
+			label:'ICF'
+		}
+	];
+	$scope.tasks = [
+
+		{
+			id:1,
+			label:'Webservice'
+		},
+		{
+			id:2,
+			label:'Sitebuild'
+		}
+	];
+
+
+	$scope.removeInstance =function(index){
+		$scope.dateContent.splice(index,1);
+
+	};
 
 	$scope.dayFormat = "d";
 	$scope.dayValues = {};
@@ -19,21 +90,43 @@ app.controller("calendarCtrl", function($scope, $filter, $http, $q) {
 	};
 
 	$scope.dayClick = function(date) {
-		$scope.$parent.isLoading = true;
-		setTimeout(function(){
-			$scope.$parent.isLoading = false;
-		},3000);
-		$scope.msg = "You clicked " + $filter("date")(date, "MMM d, y h:mm:ss a Z");
-		$scope.dayValues = {'day':$scope.selectedDate};
+		//$scope.$parent.isLoading = true;
+
+		$scope.dateContent = [];
+		if($scope.selectedDate==null){
+			$scope.current_day = "Nincs kiválasztva";
+			return false;
+		}
+		for(var i=0;i<$scope.database.length;i++){
+			if(parseInt($scope.database[i].calendarDay) == parseInt($scope.selectedDate.getDate())){
+				$scope.dateContent.push($scope.database[i])
+			}
+		}
+		$scope.current_day = $filter("date")(date, "y-MM-d");
 	};
 
 	$scope.prevMonth = function(data) {
-		$scope.msg = "You clicked (prev) month " + data.month + ", " + data.year;
+		reloadData(data);
 	};
 
 	$scope.nextMonth = function(data) {
-		$scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
+		reloadData(data);
 	};
+	function reloadData(date){
+		console.log(date);
+		$scope.$parent.isLoading = true;
+		$http({
+			method: 'POST',
+			url: './calendar/getData',
+			data:{
+				date:date.year+'-'+date.month+'-00'
+			}
+		}).then(function(response){
+			$scope.$parent.isLoading = false;
+			$scope.database = response.data;
+			console.log(response.data);
+		});
+	}
 	$scope.tooltips = true;
 	$scope.setDayContent = function(date) {
 

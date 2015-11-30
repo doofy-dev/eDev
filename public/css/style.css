@@ -88,6 +88,18 @@ md-item-content{
 .save-time-details svg{
 	padding-top: 10px;
 }
+time-tracker{
+	min-height: 700px !important;
+	max-height: 700px !important;
+	overflow-y: auto;
+}
+/*time-tracker-value{*/
+	/*display: block;*/
+	/*position: relative;*/
+	/*z-index: 10;*/
+	/*border: 1px solid rgba(0,0,0,.12);*/
+	/*background: white;*/
+/*}*/
 @media screen and (max-width: 800px){
 	.md-padding{
 		padding: 0 !important;

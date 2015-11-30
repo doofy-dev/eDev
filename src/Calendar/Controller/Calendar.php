@@ -17,6 +17,11 @@ class Calendar extends ActionController
 	public function index(){
 		$this->setTemplate('application/text');
 		$view = new ViewModel("calendar/container");
+
+
+
 		return $view;
 	}
+
+
 }

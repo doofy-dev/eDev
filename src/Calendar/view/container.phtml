@@ -1,26 +1,47 @@
 <!--https://angular-material-calendar.bradb.net/-->
 <span ng-controller="calendarCtrl" layout="row" layout-sm="column">
-		<div flex layout-padding>
-			<calendar-md flex="100" layout layout-fill
-						 calendar-direction="direction"
-						 on-prev-month="prevMonth"
-						 on-next-month="nextMonth"
-						 on-day-click="dayClick"
-						 title-format="'y MMMM'"
-						 ng-model='selectedDate'
-						 week-starts-on="firstDayOfWeek"
-						 day-format="dayFormat"
-						 day-content="setDayContent"
-						 disable-future-selection="false"
-			</calendar-md>
-		</div>
 	<div flex layout-padding>
-		<div flex layout layout-fill style="padding: 0px !important;">
+		<div flex layout layout-fill>
 			<md-content class="layout-fill ng-scope layout-column">
 				<md-toolbar>
 					<div class="md-toolbar-tools layout-row">
 						<div class="flex"></div>
-						<h2 class="calendar-md-title"><span>Részletek</span></h2>
+						<h2 class="calendar-md-title"><span>Vizualizáció</span></h2>
+
+						<div class="flex" style="text-align: right">
+<!--								BUTTONS HERE-->
+						</div>
+					</div>
+				</md-toolbar>
+				<md-content layout-padding layout="row" class="calendar ng-scope flex"
+							style="border: 1px solid rgba(0, 0, 0, 0.117647); min-height: 100px; max-height: 100px; overflow-y: auto;">
+				</md-content>
+			</md-content>
+		</div>
+
+		<calendar-md flex="100" layout layout-fill
+					 calendar-direction="direction"
+					 on-prev-month="prevMonth"
+					 on-next-month="nextMonth"
+					 on-day-click="dayClick"
+					 title-format="'y MMMM'"
+					 ng-model='selectedDate'
+					 week-starts-on="firstDayOfWeek"
+					 day-format="dayFormat"
+					 day-content="setDayContent"
+					 disable-future-selection="false"
+		</calendar-md>
+
+
+
+	</div>
+	<div flex layout-padding>
+		<div flex layout layout-fill>
+			<md-content class="layout-fill ng-scope layout-column">
+				<md-toolbar>
+					<div class="md-toolbar-tools layout-row">
+						<div class="flex"></div>
+						<h2 class="calendar-md-title"><span>Részletek ({{current_day}})</span></h2>
 
 						<div class="flex" style="text-align: right">
 							<md-button class="flex save-time-details">
@@ -31,12 +52,87 @@
 				</md-toolbar>
 				<md-content layout-padding layout="row" class="calendar ng-scope flex"
 							style="border: 1px solid rgba(0, 0, 0, 0.117647);">
+					<time-tracker flex ng-model="dateContent">
+						<md-card layout='row' layout-padding flex
+								 ng-repeat="value in dateContent track by $index">
 
-					<time-tracker flex ng-model="dayValues">
+							<div flex layout="column">
+								<md-input-container class="md-block" flex>
+									<label>Megnevezés</label>
+									<input type="text" ng-model="value.name">
+								</md-input-container>
+								<md-input-container flex>
+									<label>Típus</label>
+									<md-select ng-model="value.type">
+										<md-option ng-repeat="dayType in dayTypes" value="{{dayType.id}}">
+											{{dayType.label}}
+										</md-option>
+									</md-select>
+								</md-input-container>
+								<md-input-container flex>
+									<label>Projekt</label>
+									<md-select ng-model="value.project">
+										<md-option ng-repeat="project in projects" value="{{project.id}}">
+											{{project.label}}
+										</md-option>
+									</md-select>
+								</md-input-container>
+								<md-input-container flex>
+									<label>Feladat</label>
+									<md-select ng-model="value.task">
+										<md-option ng-repeat="task in tasks" value="{{task.id}}">
+											{{task.label}}
+										</md-option>
+									</md-select>
+								</md-input-container>
+
+								<md-input-container flex>
+									<label>Megjegyzés</label>
+									<textarea ng-model="value.comment"></textarea>
+								</md-input-container>
+							</div>
+
+
+							<div flex layout="column">
+								<div flex layout="row">
+									<span class="md-block">Kezdés</span>
+								</div>
+								<div flex layout="row">
+									<md-input-container class="md-block" flex>
+										<label>Óra</label>
+										<input type="number" ng-model="value.start.hour">
+									</md-input-container>
+									<md-input-container class="md-block" flex>
+										<label>Perc</label>
+										<input type="number" ng-model="value.start.min">
+									</md-input-container>
+								</div>
+								<div flex layout="row">
+									<span class="md-block">Befejezés</span>
+								</div>
+								<div flex layout="row">
+									<md-input-container class="md-block" flex>
+										<label>Óra</label>
+										<input type="number" ng-model="value.end.hour">
+									</md-input-container>
+									<md-input-container class="md-block" flex>
+										<label>Perc</label>
+										<input type="number" ng-model="value.end.min">
+									</md-input-container>
+								</div>
+								<md-card-actions layout="row" layout-align="end center">
+									<md-button class="md-raised md-warn" ng-click="removeInstance($index)">
+										<ng-md-icon icon="delete"
+													style="position:relative;top:8px;fill: rgba(255,255,255,0.87);"></ng-md-icon>
+									</md-button>
+
+								</md-card-actions>
+
+							</div>
+						</md-card>
 					</time-tracker>
 				</md-content>
 			</md-content>
 		</div>
 	</div>
-
 </span>

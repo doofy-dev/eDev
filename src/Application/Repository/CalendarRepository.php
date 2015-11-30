@@ -12,4 +12,41 @@ use Doctrine\ORM\EntityRepository;
  */
 class CalendarRepository extends EntityRepository
 {
+	public function getMonth(\DateTime $date){
+		$start = $date;
+		$end = (new \DateTime($date->format('Y-m-d')))->add(new \DateInterval('P1M'));
+		$connection = $this->_em->createQueryBuilder();
+		$connection->select('c')
+			->from('Application\\Entity\\Calendar', 'c')
+//				->setMaxResults(2)
+			->where('c.calendarDay > :start_date')
+			->andWhere('c.calendarDay < :end_date')
+			->setParameters(array(
+				'start_date'=> $start,
+				'end_date'=>	$end
+			))
+		;
+		return $this->convert($connection->getQuery()->getArrayResult());
+	}
+
+	/**
+	 * @param \Application\Entity\Calendar[] $rows
+	 * @return \Application\Entity\Calendar[]
+	 */
+	private function convert($rows){
+		for($i=0;$i<count($rows);$i++){
+			$rows[$i]['calendarDay']=$rows[$i]['calendarDay']->format('d');
+			$rows[$i]['start'] = array(
+					'hour'=>intval($rows[$i]['startTime']->format('H')),
+					'min'=>intval($rows[$i]['startTime']->format('i')),
+			);
+			unset($rows[$i]['startTime']);
+			$rows[$i]['end'] = array(
+					'hour'=>intval($rows[$i]['endTime']->format('H')),
+					'min'=>intval($rows[$i]['endTime']->format('i')),
+			);
+			unset($rows[$i]['endTime']);
+		}
+		return $rows;
+	}
 }

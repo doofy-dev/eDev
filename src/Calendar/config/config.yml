@@ -1,7 +1,13 @@
 routes:
+  calendar_data:
+    route: '/calendar/getdata'
+    controller: "calendarRest"
+    default:
+          action: "getData"
 
 invokable:
   calendar: "Calendar\Controller\Calendar"
+  calendarRest: "Calendar\Controller\CalendarRest"
 
 view:
   calendar/container: "Calendar/view/container.phtml"

@@ -41,6 +41,7 @@ app.controller('Application',function($mdSidenav,$scope){
 			icon:'close'
 		}
 	];
+
 	$scope.toRoute = function(entity){
 		location.href = entity.url;
 		//history.pushState({route:entity.url},entity.title,entity.url);
