@@ -13,5 +13,6 @@ Database:
   driver: pdo_mysql
   host: localhost
   user: root
+  charset: "utf8"
   password:
   dbname: edev

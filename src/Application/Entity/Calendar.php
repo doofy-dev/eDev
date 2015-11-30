@@ -61,7 +61,30 @@ class Calendar
      * })
      */
     private $user;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="comment", type="string", nullable=true)
+     */
+    private $comment;
 
+    /**
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * @param string $comment
+     * @return $this
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+        return $this;
+    }
 
 
     /**

@@ -80,7 +80,8 @@ md-item-content{
 	margin-left: 80px;
 }
 .fab-add{
-	background: rgb(255, 95, 103) !important;
+	font-size: 2em;
+	font-weight: lighter;
 }
 .save-time-details{
 	margin-right: -15px;

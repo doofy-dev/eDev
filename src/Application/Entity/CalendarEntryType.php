@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * CalendarEntryType
  *
  * @ORM\Table(name="calendar_entry_type")
- * @ORM\Entity(repositoryClass="Application\Repository\CalenradEntryTypeRepository")
+ * @ORM\Entity(repositoryClass="Application\Repository\CalendarEntryTypeRepository")
  */
 class CalendarEntryType
 {

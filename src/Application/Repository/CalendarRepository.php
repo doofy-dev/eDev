@@ -16,8 +16,9 @@ class CalendarRepository extends EntityRepository
 		$start = $date;
 		$end = (new \DateTime($date->format('Y-m-d')))->add(new \DateInterval('P1M'));
 		$connection = $this->_em->createQueryBuilder();
-		$connection->select('c')
+		$connection->select('c.calendarId, c.startTime, c.endTime, c.calendarDay, t.entryTypeId, c.comment')
 			->from('Application\\Entity\\Calendar', 'c')
+				->innerJoin('c.entryType','t')
 //				->setMaxResults(2)
 			->where('c.calendarDay > :start_date')
 			->andWhere('c.calendarDay < :end_date')

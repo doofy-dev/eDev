@@ -57,15 +57,11 @@
 								 ng-repeat="value in dateContent track by $index">
 
 							<div flex layout="column">
-								<md-input-container class="md-block" flex>
-									<label>Megnevezés</label>
-									<input type="text" ng-model="value.name">
-								</md-input-container>
 								<md-input-container flex>
 									<label>Típus</label>
-									<md-select ng-model="value.type">
-										<md-option ng-repeat="dayType in dayTypes" value="{{dayType.id}}">
-											{{dayType.label}}
+									<md-select ng-model="value.entryTypeId">
+										<md-option ng-repeat="dayType in dayTypes" value="{{dayType.entryTypeId}}">
+											{{dayType.entryName}}
 										</md-option>
 									</md-select>
 								</md-input-container>

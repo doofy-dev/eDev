@@ -1,9 +1,11 @@
 routes:
   calendar_data:
-    route: '/calendar/getdata'
+    route: '/calendarrest/:action[/]'
     controller: "calendarRest"
+    constraint:
+      action: "(\w+)"
     default:
-          action: "getData"
+          action: "getdata"
 
 invokable:
   calendar: "Calendar\Controller\Calendar"

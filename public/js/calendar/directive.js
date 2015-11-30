@@ -12,7 +12,7 @@ app.directive('timeTracker', ['$compile', function ($compile) {
 				'padding-bottom': '70px'
 			});
 			var button = $compile(
-				'<md-button ng-click="add()" style="margin-bottom: -10px" class="md-accent md-fab md-fab-bottom-right fab-add">+</md-button>')($scope);
+				'<md-button ng-click="add()" style="margin-bottom: -10px" class="md-warn md-fab md-fab-bottom-right fab-add">+</md-button>')($scope);
 			$element.append(button);
 			$scope.$watch(function () {
 				return ngModel.$modelValue;

@@ -26,7 +26,7 @@ app.controller("calendarCtrl", function($scope, $filter, $http, $q) {
 	$scope.$parent.isLoading = true;
 	$http({
 		method: 'POST',
-		url: './calendar/getData',
+		url: './calendarrest/getdata',
 		data:{
 			date:$filter("date")(date, "y-MM-")+'00'
 		}
@@ -35,17 +35,15 @@ app.controller("calendarCtrl", function($scope, $filter, $http, $q) {
 		$scope.database = response.data;
 		console.log(response.data);
 	});
-	$scope.dayTypes = [
-
-		{
-			id:1,
-			label:'EFF'
-		},
-		{
-			id:2,
-			label:'Attr'
-		}
-	];
+	$scope.dayTypes = [];
+	$http({
+		method: 'GET',
+		url: './calendarrest/gettypes'
+	}).then(function(response){
+		$scope.$parent.isLoading = false;
+		$scope.dayTypes = response.data;
+		console.log(response.data);
+	});
 	$scope.projects = [
 
 		{
@@ -117,7 +115,7 @@ app.controller("calendarCtrl", function($scope, $filter, $http, $q) {
 		$scope.$parent.isLoading = true;
 		$http({
 			method: 'POST',
-			url: './calendar/getData',
+			url: './calendarrest/getdata',
 			data:{
 				date:date.year+'-'+date.month+'-00'
 			}

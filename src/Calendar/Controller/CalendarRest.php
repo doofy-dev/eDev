@@ -13,7 +13,7 @@ use decoy\base\RestFulController;
 
 class CalendarRest extends RestFulController
 {
-	public function getData(){
+	public function getdata(){
 		if($this->getRequest()->isPost()){
 
 			$sent = $this->getApplication()->getRequestBody()->content;
@@ -27,5 +27,10 @@ class CalendarRest extends RestFulController
 			return $result;
 		}
 		return array('type'=>'NOTHING SENT');
+	}
+
+	public function gettypes(){
+		$repo = $this->getEntityManager()->getRepository('Application\\Entity\\CalendarEntryType');
+		return $repo->getList();
 	}
 }
