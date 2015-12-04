@@ -1,6 +1,7 @@
 {
     "require": {
         "archwisp/php-encrypt-data":"dev-master",
-        "teeebor/decoy-framework":"dev-master"
+        "teeebor/decoy-framework":"dev-master",
+        "phpoffice/phpexcel":"1.8.1"
     }
 }

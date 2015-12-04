@@ -3,13 +3,13 @@ routes:
     route: '/calendarrest/:action[/]'
     controller: "calendarRest"
     constraint:
-      action: "(\w+)"
+      action: "(\\w+)"
     default:
           action: "getdata"
 
 invokable:
-  calendar: "Calendar\Controller\CalendarController"
-  calendarRest: "Calendar\Controller\CalendarRest"
+  calendar: "Calendar\\Controller\\CalendarController"
+  calendarRest: "Calendar\\Controller\\CalendarRest"
 
 view:
   calendar/container: "Calendar/view/container.phtml"

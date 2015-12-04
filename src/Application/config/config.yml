@@ -16,9 +16,9 @@ routes:
         type: "index"
 
 invokable:
-  auth: "Application\Controller\Auth"
-  dashboard: "Application\Controller\Dashboard"
-  application: "Application\Controller\Application"
+  auth: "Application\\Controller\\Auth"
+  dashboard: "Application\\Controller\\Dashboard"
+  application: "Application\\Controller\\Application"
 
 view:
   error/404: "Application/view/error/404.phtml"

@@ -4,7 +4,7 @@ Modules:
   - Application
   - Calendar
 debug: true
-error_page_controller: decoy\base\ErrorController
+error_page_controller: "decoy\\base\\ErrorController"
 
 use_database: true
 Database:
