@@ -45,7 +45,6 @@ class CalendarController extends ActionController
 	}
 
 	public function save(){
-		$this->setTemplate('application/text');
 		$this->getApplication()->getRequestHeader()->setVariable('Content-Type','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		$this->getApplication()->getRequestHeader()->setVariable('Content-Disposition','attachment;filename="01simple.xlsx"');
 		$this->getApplication()->getRequestHeader()->setVariable('Cache-Control','max-age=0');
