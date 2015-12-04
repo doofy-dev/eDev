@@ -8,12 +8,12 @@ routes:
     route: "/:action[.:type](/)?$"
     controller: "application"
     constraint:
-      type: "(html|txt)"
+      type: "[a-zA-Z]+"
       action: "(login|logout|dashboard|calendar)"
     default:
       action: "index"
       constraint:
-        type: "html"
+        type: "index"
 
 invokable:
   auth: "Application\Controller\Auth"

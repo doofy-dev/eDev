@@ -7,7 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Calendar
  *
- * @ORM\Table(name="calendar", indexes={@ORM\Index(name="fk_calendar_entry_type_id", columns={"entry_type_id"}), @ORM\Index(name="fk_calendar_user_id", columns={"user_id"})})
+ * @ORM\Table(name="calendar", indexes={
+ *     @ORM\Index(name="fk_calendar_entry_type_id", columns={"entry_type_id"}),
+ *     @ORM\Index(name="fk_calendar_user_id", columns={"user_id"}),
+ *     @ORM\Index(name="fk_calendar_project", columns={"project_id"}),
+ *     @ORM\Index(name="fk_calendar_task", columns={"task_id"})
+ *	 })
  * @ORM\Entity(repositoryClass="Application\Repository\CalendarRepository")
  */
 class Calendar
@@ -69,6 +74,59 @@ class Calendar
      */
     private $user;
 
+    /**
+     * @var \Application\Entity\ProjectList
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\ProjectList")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="project_id", referencedColumnName="project_id")
+     * })
+     */
+    private $project;
+
+    /**
+     * @var \Application\Entity\ProjectTasks
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\ProjectTasks")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="task_id", referencedColumnName="task_id")
+     * })
+     */
+    private $task;
+
+	/**
+	 * @return ProjectList
+	 */
+	public function getProject()
+	{
+		return $this->project;
+	}
+
+	/**
+	 * @param ProjectList $project
+	 */
+	public function setProject($project)
+	{
+		$this->project = $project;
+	}
+
+	/**
+	 * @return ProjectTasks
+	 */
+	public function getTask()
+	{
+		return $this->task;
+	}
+
+	/**
+	 * @param ProjectTasks $task
+	 * @return Calendar
+	 */
+	public function setTask($task)
+	{
+		$this->task = $task;
+		return $this;
+	}
 
 
     /**

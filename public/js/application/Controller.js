@@ -8,32 +8,72 @@ app.controller('Application',function($mdSidenav,$scope){
 	$scope.isLoading = false;
 	$scope.menu = [
 		{
-			title:'Áttekintés',
+			title:'Folyam',
 			url:'/dashboard',
 			icon:'dashboard'
 		},
 		{
+			title: 'Értesítések',
+			url:'/notifications',
+			icon: 'access_alarm'
+		},
+		{
 			title: 'Jelenlét',
 			url:'/calendar',
-			icon: 'access_time'
+			icon: 'event'
 		},
 		{
 			inset:true,
-			title:'Megtekintés',
-			url:'/calendar',
+			title:'Előnézet',
+			url:'/calendar/preview',
 			icon: 'visibility'
 
 		},
 		{
 			inset:true,
-			title:'Export',
+			title:'Exportálás',
 			url:'/calendar/export',
 			icon: 'get_app'
+		},
+		{
+			inset:true,
+			title:'Beállítások',
+			url:'/calendar/settings',
+			icon: 'settings'
 		},
 		{
 			title:'Projektek',
 			url:'/projects',
 			icon:'bookmark_outline'
+		},
+		{
+			inset:true,
+			title:'Lista',
+			url:'/projects/list',
+			icon: 'list'
+		},
+		{
+			inset:true,
+			title:'Feladatok',
+			url:'/projects/tasks',
+			icon: 'assignment_turned_in'
+		},
+		{
+			inset:true,
+			title:'Hibakövetés',
+			url:'/projects/bug',
+			icon: 'bug_report'
+		},
+		{
+			inset:true,
+			title:'Csatolmányok',
+			url:'/projects/dashboard',
+			icon: 'attachment'
+		},
+		{
+			title:'Fiók',
+			url:'/account',
+			icon:'account_circle'
 		},
 		{
 			title:'Kijelentkezés',

@@ -20,5 +20,28 @@ class CalendarController extends ActionController
 		return $view;
 	}
 
+	public function preview(){
+		$this->setTemplate('application/text');
+		$view = new ViewModel('application/index');
+		$view->addVariable('moduleName','INDEX');
+		$view->addVariable('body','PREVIEW');
+		return $view;
+	}
+
+	public function export(){
+		$this->setTemplate('application/text');
+		$view = new ViewModel('application/index');
+		$view->addVariable('moduleName','INDEX');
+		$view->addVariable('body','EXPORT');
+		return $view;
+	}
+
+	public function settings(){
+		$this->setTemplate('application/text');
+		$view = new ViewModel('application/index');
+		$view->addVariable('moduleName','INDEX');
+		$view->addVariable('body','SETTINGS');
+		return $view;
+	}
 
 }

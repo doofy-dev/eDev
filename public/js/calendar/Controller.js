@@ -2,23 +2,17 @@
  * Created by Tibi on 2015.11.25..
  */
 
-app.controller("calendarCtrl", function ($scope, $filter, $http, $q) {
+app.controller("calendarCtrl", function ($scope, $filter, $http, $q, CalendarData) {
 	$scope.current_day = "Nincs kiválasztva";
 	$scope.dateContent = [];
 	$scope.database = [];
 
+	$scope.dateMap = [];
+	$scope.sum = [
+	];
+	$scope.dataGet=false;
 	var date = Date.now();
-	$scope.$parent.isLoading = true;
-	$http({
-		method: 'POST',
-		url: './calendarrest/getdata',
-		data: {
-			date: $filter("date")(date, "y-MM-") + '00'
-		}
-	}).then(function (response) {
-		$scope.$parent.isLoading = false;
-		$scope.database = response.data;
-	});
+
 	$scope.dayTypes = [];
 	$http({
 		method: 'GET',
@@ -70,14 +64,32 @@ app.controller("calendarCtrl", function ($scope, $filter, $http, $q) {
 		}
 		for (var i = 0; i < $scope.database.length; i++) {
 			if (parseInt($scope.database[i].calendarDay) == parseInt($scope.selectedDate.getDate())) {
-				$scope.dateContent.push($scope.database[i])
+				var currentIndex = $scope.dateContent.length;
+				$scope.dateContent.push($scope.database[i]);
+				if($scope.database[i].project!=null){
+					$scope.updateTasks($scope.dateContent[currentIndex],{projectId:$scope.database[i].project})
+				}
 			}
 		}
+		console.log($scope.dateContent);
 		$scope.current_day = $filter("date")(date, "y-MM-d");
+	};
+	$scope.saveDay = function(){
+		$scope.$parent.isLoading = true;
+		$http({
+			method: 'POST',
+			url: './calendarrest/savetasks',
+			data: {'userId': '1', 'values': $scope.dateContent,'date':$filter("date")($scope.selectedDate, "y-MM-dd")}
+		}).then(function (response) {
+			console.log(response.data);
+			if(!response.data.status)
+				$scope.$parent.isLoading = false;
+			else
+				loadData($scope.selectedDate);
+		});
 	};
 	$scope.updateTasks = function (parent, project) {
 		//$scope.tasks = [];
-		console.log(project);
 		$scope.$parent.isLoading = true;
 		$http({
 			method: 'POST',
@@ -91,45 +103,71 @@ app.controller("calendarCtrl", function ($scope, $filter, $http, $q) {
 	};
 
 	$scope.prevMonth = function (data) {
+		$scope.dates = [];
 		reloadData(data);
 	};
 
 	$scope.nextMonth = function (data) {
+		$scope.dates = [];
 		reloadData(data);
 	};
 	function reloadData(date) {
-		console.log(date);
 		$scope.$parent.isLoading = true;
+		$scope.dataGet = false;
+		loadData(new Date(date.year+'-'+date.month+"-01"))
+	}
+
+	loadData($scope.selectedDate);
+
+	function loadData(date){
+		$scope.database = [];
+		$scope.sum = [];
+		clearTable();
+		$scope.$parent.isLoading = false;
 		$http({
 			method: 'POST',
 			url: './calendarrest/getdata',
 			data: {
-				date: date.year + '-' + date.month + '-00'
+				date: $filter("date")(date, "y-MM-") + '00'
 			}
 		}).then(function (response) {
 			$scope.$parent.isLoading = false;
 			$scope.database = response.data;
-			console.log(response.data);
+			var map = {};
+			var typeMap = {};
+			for(var i=0;i<response.data.length;i++){
+				if(typeMap[response.data[i].entryName]==null)
+					typeMap[response.data[i].entryName] = 0;
+				response.data[i].end.hour = response.data[i].end.hour==0?24:response.data[i].end.hour;
+				typeMap[response.data[i].entryName]+=
+						((response.data[i].end.hour*60+response.data[i].end.min) -
+						(response.data[i].start.hour*60+response.data[i].start.min))/60;
+				var day = $filter("date")(date, "y-MM-")+response.data[i].calendarDay;
+				if(typeof map[day]=='undefined') map[day] = $('<p/>').addClass('day-container');
+				map[day].append(
+						$('<span/>')
+								.addClass('day-indicator')
+								.addClass('day-color-'+response.data[i].entryTypeId)
+				);
+			}
+			for(var key in map){
+				CalendarData.setDayContent(new Date(key),map[key].prop('outerHTML'));
+			}
+			for(var key in typeMap)
+				$scope.sum.push({
+					type: key,
+					number: typeMap[key].toFixed(2)
+				});
+			console.log(typeMap)
 		});
 	}
-
-	$scope.tooltips = true;
+	function clearTable(){
+		for(var i=0;i<$scope.dateMap.length;i++)
+			CalendarData.setDayContent($scope.dateMap[i],'<p class="day-container"></p>');
+	}
 	$scope.setDayContent = function (date) {
-
-		// You would inject any HTML you wanted for
-		// that particular date here.
-		return "<p></p>";
-
-		//// You could also use an $http function directly.
-		//return $http.get("/some/external/api");
-		//
-		//// You could also use a promise.
-		//var deferred = $q.defer();
-		//$timeout(function() {
-		//	deferred.resolve("<p></p>");
-		//}, 1000);
-		//return deferred.promise;
-
+		$scope.dateMap.push(date);
+		return '<p class="day-container"></p>';
 	};
 
 });

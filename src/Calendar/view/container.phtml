@@ -6,15 +6,21 @@
 				<md-toolbar>
 					<div class="md-toolbar-tools layout-row">
 						<div class="flex"></div>
-						<h2 class="calendar-md-title"><span>Vizualizáció</span></h2>
+						<h2 class="calendar-md-title"><span>Összegzés</span></h2>
 
 						<div class="flex" style="text-align: right">
-<!--								BUTTONS HERE-->
+							<!--								BUTTONS HERE-->
+
 						</div>
 					</div>
 				</md-toolbar>
 				<md-content layout-padding layout="row" class="calendar ng-scope flex"
 							style="border: 1px solid rgba(0, 0, 0, 0.117647); min-height: 100px; max-height: 100px; overflow-y: auto;">
+					<div class="md-list-item-text" ng-repeat="s in sum" flex>
+						<h3> {{ s.number }} óra</h3>
+						<p> {{ s.type }} </p>
+					</div>
+
 				</md-content>
 			</md-content>
 		</div>
@@ -33,7 +39,6 @@
 		</calendar-md>
 
 
-
 	</div>
 	<div flex layout-padding>
 		<div flex layout layout-fill>
@@ -44,7 +49,7 @@
 						<h2 class="calendar-md-title"><span>Részletek ({{current_day}})</span></h2>
 
 						<div class="flex" style="text-align: right">
-							<md-button class="flex save-time-details">
+							<md-button ng-show="dateContent.length>0" ng-click="saveDay()" class="flex save-time-details" aria-label="Mentés">
 								<ng-md-icon size="30" style="fill: rgba(255,255,255,0.87);" icon="check"></ng-md-icon>
 							</md-button>
 						</div>
@@ -55,6 +60,10 @@
 					<time-tracker flex ng-model="dateContent">
 						<md-card layout='row' layout-padding flex
 								 ng-repeat="value in dateContent track by $index">
+							<div layout="column" style="width: 5px; padding: 0;" layout-align="center center"
+								 class="day-color-{{value.entryTypeId}}">
+								&nbsp;
+							</div>
 
 							<div flex layout="column">
 								<md-input-container flex>
@@ -68,7 +77,8 @@
 								<md-input-container flex>
 									<label>Projekt</label>
 									<md-select ng-model="value.project">
-										<md-option ng-repeat="project in projects" ng-click="updateTasks(value,project)" value="{{project.projectId}}">
+										<md-option ng-repeat="project in projects" ng-click="updateTasks(value,project)"
+												   value="{{project.projectId}}">
 											{{project.projectName}}
 										</md-option>
 									</md-select>
@@ -95,11 +105,12 @@
 								<div flex layout="row">
 									<md-input-container class="md-block" flex>
 										<label>Óra</label>
-										<input type="number" ng-model="value.start.hour">
+										<input type="number" ng-change="" time-handler="hour"
+											   ng-model="value.start.hour">
 									</md-input-container>
 									<md-input-container class="md-block" flex>
 										<label>Perc</label>
-										<input type="number" ng-model="value.start.min">
+										<input type="number" time-handler="minute" ng-model="value.start.min">
 									</md-input-container>
 								</div>
 								<div flex layout="row">
@@ -108,15 +119,16 @@
 								<div flex layout="row">
 									<md-input-container class="md-block" flex>
 										<label>Óra</label>
-										<input type="number" ng-model="value.end.hour">
+										<input type="number" time-handler="hour" ng-model="value.end.hour">
 									</md-input-container>
 									<md-input-container class="md-block" flex>
 										<label>Perc</label>
-										<input type="number" ng-model="value.end.min">
+										<input type="number" time-handler="minute" ng-model="value.end.min">
 									</md-input-container>
 								</div>
 								<md-card-actions layout="row" layout-align="end center">
-									<md-button class="md-raised md-warn" ng-click="removeInstance($index)">
+									<md-button class="md-raised md-warn" aria-label="Törlés"
+											   ng-click="removeInstance($index)">
 										<ng-md-icon icon="delete"
 													style="position:relative;top:8px;fill: rgba(255,255,255,0.87);"></ng-md-icon>
 									</md-button>

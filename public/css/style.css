@@ -94,6 +94,48 @@ time-tracker{
 	max-height: 700px !important;
 	overflow-y: auto;
 }
+calendar-md div.layout-row>.ng-binding:first-child:not(.subheader-day){
+	display: inline-block;
+	width: 30px;
+	margin: 0;
+	margin-right: -30px;
+}
+.calendar{
+	overflow: hidden;
+}
+.day-container{
+	display: inline-block;
+	height:10px;
+	width:70%;
+	overflow: hidden;
+	position: relative;
+	margin-bottom: 5px;
+}
+.day-indicator{
+	display: inline-block;
+	height:10px;
+	width:5px;
+	position: relative;
+	top: -3px;
+	margin:0;
+	background: rgb(0, 255, 255);
+}
+
+.day-color-7{
+	background: #4B65FF;
+}
+.day-color-8{
+	background: #FF574F;
+}
+.day-color-9{
+	background: #31B124;
+}
+.day-color-10{
+	background: #A00DB1;
+}
+.day-color-11{
+	background: #F5A939;
+}
 /*time-tracker-value{*/
 	/*display: block;*/
 	/*position: relative;*/

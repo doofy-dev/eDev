@@ -2,10 +2,5 @@
     "require": {
         "archwisp/php-encrypt-data":"dev-master",
         "teeebor/decoy-framework":"dev-master"
-    },
-    "autoload": {
-        "psr-0": {
-            "": "src/"
-        }
     }
 }

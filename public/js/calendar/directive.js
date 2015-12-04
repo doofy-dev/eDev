@@ -14,6 +14,7 @@ app.directive('timeTracker', ['$compile', function ($compile) {
 			var button = $compile(
 				'<md-button ng-click="add()" style="margin-bottom: -10px" class="md-warn md-fab md-fab-bottom-right fab-add">+</md-button>')($scope);
 			$element.append(button);
+
 			$scope.$watch(function () {
 				return ngModel.$modelValue;
 			}, function (newValue, oldValue) {
@@ -31,3 +32,24 @@ app.directive('timeTracker', ['$compile', function ($compile) {
 		}
 	}
 }]);
+app.directive('timeHandler',function(){
+	return{
+		restrict: 'A',
+		link: function ($scope, $elem, $attrs) {
+			var type = $attrs.timeHandler=='hour'?24:59;
+			$elem.bind('keyup',function(e){
+				if(parseInt($elem.val())>type){
+					$elem.val(type);
+				}else{
+					if(parseInt($elem.val())!==$elem.val()){
+						$elem.val(parseInt($elem.val()));
+					}
+				}
+				console.log($elem);
+				//if(!$scope.$last) {
+				//	$elem[0].parentNode.nextElementSibling.children[1].focus();
+				//}
+			});
+		}
+	}
+});

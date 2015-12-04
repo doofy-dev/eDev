@@ -7,8 +7,6 @@ debug: true
 error_page_controller: decoy\base\ErrorController
 
 use_database: true
-entity_path: "/src/Application/Entity"
-repo_path: "/src/Application/Respository"
 Database:
   driver: pdo_mysql
   host: localhost

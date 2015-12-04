@@ -48,4 +48,31 @@ class CalendarRest extends RestFulController
 		}
 		return array();
 	}
+
+	public function savetasks(){
+		if($this->getRequest()->isPost()){
+			$data = $this->getApplication()->getRequestBody()->content;
+			$user = $this->getEntityManager()->getReference('Application\\Entity\\User',$data['userId']);
+			$date = new \DateTime($data['date']);
+
+			$repo = $this->getEntityManager()->getRepository('Application\\Entity\\Calendar');
+			if($user){
+				//Getting saved rows to clean the deleted ones
+				$original = $repo->getAllForDate($user,$date);
+				foreach($data['values'] as $row){
+					if(array_key_exists('calendarId',$row)){
+						$repo->updateRow($user, $this->getEntityManager()->getReference('Application\\Entity\\Calendar',$row['calendarId']), $row);
+						if(($key = array_search($row['calendarId'], $original)) !== false)
+							unset($original[$key]);
+					}else{
+						$repo->addRow($user,$row,$date);
+					}
+				}
+				$repo->cleanRows($original);
+
+			}
+			return array('status'=>true);
+		}
+	}
+
 }
