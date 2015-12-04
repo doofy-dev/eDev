@@ -16,23 +16,61 @@ class CalendarRepository extends EntityRepository
 {
 
 	/**
+	 * @param \DateTime $date
+	 */
+	public function getMonthSum(\DateTime $date)
+	{
+		$tempDate = $this->addMonth($date);
+		$sql = "
+			SELECT
+			  c.entry_type_id,
+			  (SELECT SEC_TO_TIME(
+						  SUM(
+						  	TIME_TO_SEC(
+						  		CASE
+								  WHEN TIMEDIFF(cs.end_time, cs.start_time) < '00:00:00'
+									THEN TIMEDIFF('24:00:00', cs.start_time)
+								  ELSE TIMEDIFF(cs.end_time, cs.start_time)
+								END)
+						  )
+					 ) AS sa
+			   FROM calendar cs
+			   WHERE (cs.calendar_day >= CAST('" . $date->format('Y-m') . "-01' AS DATE)
+					  AND cs.calendar_day < CAST('" . $tempDate->format('Y-m-d') . "' AS DATE))
+					 AND cs.entry_type_id = c.entry_type_id
+			  ) AS s
+			FROM calendar_entry_type c
+			GROUP BY c.entry_type_id
+		";
+	}
+
+	public function addMonth(\DateTime $date, $withDay = false)
+	{
+		$format = 'Y-m' . ($withDay ? '-d' : '');
+		$temp = new \DateTime($date->format($format) . ($withDay ? '' : '-01'));
+		$temp->add(new \DateInterval('P' . cal_days_in_month(CAL_GREGORIAN, $date->format('m'), $date->format('Y')) . 'D'));
+		return $temp;
+	}
+
+	/**
 	 * @param array $ids
 	 * @return bool
 	 */
-	public function cleanRows(array $ids){
+	public function cleanRows(array $ids)
+	{
 		$connection = $this->_em->getConnection();
 		$connection->beginTransaction();
-		try{
-			foreach($ids as $id){
-				$instance = $this->_em->getReference('Application\\Entity\\Calendar',$id);
+		try {
+			foreach ($ids as $id) {
+				$instance = $this->_em->getReference('Application\\Entity\\Calendar', $id);
 				$this->_em->remove($instance);
 				$this->_em->flush();
 			}
 			$this->_em->commit();
 			return true;
-		}catch (\Exception $e){
+		} catch (\Exception $e) {
 			$connection->rollBack();
-			Logger::Log('log/calendar_repo.txt',$e->getMessage());
+			Logger::Log('log/calendar_repo.txt', $e->getMessage());
 		}
 		return false;
 	}
@@ -43,11 +81,12 @@ class CalendarRepository extends EntityRepository
 	 * @param \Datetime $day
 	 * @return bool
 	 */
-	public function addRow($user, $data, $day){
+	public function addRow($user, $data, $day)
+	{
 		$calendar = new Calendar;
 		$calendar->setCalendarDay($day);
 		$calendar->setUser($user);
-		return $this->updateRow($user,$calendar, $data);
+		return $this->updateRow($user, $calendar, $data);
 	}
 
 	/**
@@ -56,43 +95,44 @@ class CalendarRepository extends EntityRepository
 	 * @param array $data
 	 * @return bool
 	 */
-	public function updateRow($user, $calendar, $data){
+	public function updateRow($user, $calendar, $data)
+	{
 		$connection = $this->_em->getConnection();
 		$connection->beginTransaction();
-		try{
-			if(array_key_exists('comment',$data))
+		try {
+			if (array_key_exists('comment', $data))
 				$calendar->setComment($data['comment']);
 			else
 				$calendar->setComment(null);
-			if(array_key_exists('entryTypeId',$data) && $data['entryTypeId']!=null)
-				$calendar->setEntryType($this->_em->getReference('Application\\Entity\\CalendarEntryType',$data['entryTypeId']));
+			if (array_key_exists('entryTypeId', $data) && $data['entryTypeId'] != null)
+				$calendar->setEntryType($this->_em->getReference('Application\\Entity\\CalendarEntryType', $data['entryTypeId']));
 			else
 				$calendar->setEntryType(null);
-			if(array_key_exists('project',$data) && $data['project']!=null)
-				$calendar->setProject($this->_em->getReference('Application\\Entity\\ProjectList',$data['project']));
+			if (array_key_exists('project', $data) && $data['project'] != null)
+				$calendar->setProject($this->_em->getReference('Application\\Entity\\ProjectList', $data['project']));
 			else
 				$calendar->setProject(null);
-			if(array_key_exists('task',$data) && $data['task']!=null)
-				$calendar->setTask($this->_em->getReference('Application\\Entity\\ProjectTasks',$data['task']));
+			if (array_key_exists('task', $data) && $data['task'] != null)
+				$calendar->setTask($this->_em->getReference('Application\\Entity\\ProjectTasks', $data['task']));
 			else
 				$calendar->setTask(null);
 
-			if(array_key_exists('start',$data) && array_key_exists('hour',$data['start']) && array_key_exists('min',$data['start']))
-				$calendar->setStartTime(new \DateTime(sprintf('%02d',$data['start']['hour']).':'.sprintf('%02d',$data['start']['min'])));
+			if (array_key_exists('start', $data) && array_key_exists('hour', $data['start']) && array_key_exists('min', $data['start']))
+				$calendar->setStartTime(new \DateTime(sprintf('%02d', $data['start']['hour']) . ':' . sprintf('%02d', $data['start']['min'])));
 			else
 				$calendar->setStartTime(null);
 
-			if(array_key_exists('end',$data) && array_key_exists('hour',$data['end']) && array_key_exists('min',$data['end']))
-				$calendar->setEndTime(new \DateTime(sprintf('%02d',$data['end']['hour']).':'.sprintf('%02d',$data['end']['min'])));
+			if (array_key_exists('end', $data) && array_key_exists('hour', $data['end']) && array_key_exists('min', $data['end']))
+				$calendar->setEndTime(new \DateTime(sprintf('%02d', $data['end']['hour']) . ':' . sprintf('%02d', $data['end']['min'])));
 			else
 				$calendar->setEndTime(null);
 			$this->_em->persist($calendar);
 			$this->_em->flush();
 			$connection->commit();
 			return true;
-		}catch (\Exception $e){
+		} catch (\Exception $e) {
 			$connection->rollBack();
-			Logger::Log('log/calendar_repo.txt',$e->getMessage());
+			Logger::Log('log/calendar_repo.txt', $e->getMessage());
 			return false;
 		}
 	}
@@ -102,16 +142,17 @@ class CalendarRepository extends EntityRepository
 	 * @param \Datetime $date
 	 * @return array of Calendar ID
 	 */
-	public function getAllForDate($user, $date){
+	public function getAllForDate($user, $date)
+	{
 		$connection = $this->_em->createQueryBuilder();
 		$connection->select('c.calendarId')
-				->from('Application\\Entity\\Calendar','c')
-				->innerJoin('c.user','u')
-				->where('c.calendarDay = :DAY')
-				->andWhere('u.userId = :USER')
+			->from('Application\\Entity\\Calendar', 'c')
+			->innerJoin('c.user', 'u')
+			->where('c.calendarDay = :DAY')
+			->andWhere('u.userId = :USER')
 			->setParameters(array(
-				'DAY'=>$date,
-				'USER'=>$user->getUserId()
+				'DAY' => $date,
+				'USER' => $user->getUserId()
 			));
 
 		return $this->getJustIDs($connection->getQuery()->getArrayResult());
@@ -121,10 +162,11 @@ class CalendarRepository extends EntityRepository
 	 * @param array $rows
 	 * @return array
 	 */
-	private function getJustIDs($rows){
+	private function getJustIDs($rows)
+	{
 		$result = array();
-		foreach($rows as $row){
-			$result[]=$row['calendarId'];
+		foreach ($rows as $row) {
+			$result[] = $row['calendarId'];
 		}
 		return $result;
 	}
@@ -133,24 +175,24 @@ class CalendarRepository extends EntityRepository
 	 * @param \DateTime $date
 	 * @return \Application\Entity\Calendar[]
 	 */
-	public function getMonth(\DateTime $date){
+	public function getMonth(\DateTime $date)
+	{
 		$start = $date;
 		$end = (new \DateTime($date->format('Y-m-d')))->add(new \DateInterval('P1M'));
 		$connection = $this->_em->createQueryBuilder();
 		$connection->select('c.calendarId, c.startTime, c.endTime, c.calendarDay, t.entryTypeId, t.entryName, c.comment,
 		p.projectId as project, j.taskId as task')
 			->from('Application\\Entity\\Calendar', 'c')
-			->innerJoin('c.entryType','t')
-			->leftJoin('c.task','j')
-			->leftJoin('c.project','p')
+			->innerJoin('c.entryType', 't')
+			->leftJoin('c.task', 'j')
+			->leftJoin('c.project', 'p')
 //				->setMaxResults(2)
 			->where('c.calendarDay > :start_date')
 			->andWhere('c.calendarDay < :end_date')
 			->setParameters(array(
-				'start_date'=> $start,
-				'end_date'=>	$end
-			))
-		;
+				'start_date' => $start,
+				'end_date' => $end
+			));
 		return $this->convert($connection->getQuery()->getArrayResult());
 	}
 
@@ -158,31 +200,32 @@ class CalendarRepository extends EntityRepository
 	 * @param \Application\Entity\Calendar[] $rows
 	 * @return \Application\Entity\Calendar[]
 	 */
-	private function convert($rows){
-		for($i=0;$i<count($rows);$i++){
-			$rows[$i]['calendarDay']=$rows[$i]['calendarDay']->format('d');
-			if($rows[$i]['startTime']!=null)
-			$rows[$i]['start'] = array(
-				'hour'=>intval($rows[$i]['startTime']->format('H')),
-				'min'=>intval($rows[$i]['startTime']->format('i')),
-			);
+	private function convert($rows)
+	{
+		for ($i = 0; $i < count($rows); $i++) {
+			$rows[$i]['calendarDay'] = $rows[$i]['calendarDay']->format('d');
+			if ($rows[$i]['startTime'] != null)
+				$rows[$i]['start'] = array(
+					'hour' => intval($rows[$i]['startTime']->format('H')),
+					'min' => intval($rows[$i]['startTime']->format('i')),
+				);
 			else
 				$rows[$i]['start'] = array(
-						'hour'=>'',
-						'min'=>'',
+					'hour' => '',
+					'min' => '',
 				);
 
 			unset($rows[$i]['startTime']);
 
-			if($rows[$i]['endTime']!=null)
-			$rows[$i]['end'] = array(
-				'hour'=>intval($rows[$i]['endTime']->format('H')),
-				'min'=>intval($rows[$i]['endTime']->format('i')),
-			);
+			if ($rows[$i]['endTime'] != null)
+				$rows[$i]['end'] = array(
+					'hour' => intval($rows[$i]['endTime']->format('H')),
+					'min' => intval($rows[$i]['endTime']->format('i')),
+				);
 			else
 				$rows[$i]['end'] = array(
-						'hour'=>'',
-						'min'=>'',
+					'hour' => '',
+					'min' => '',
 				);
 			unset($rows[$i]['endTime']);
 		}

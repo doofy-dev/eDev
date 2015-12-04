@@ -40,11 +40,18 @@ class CalendarController extends ActionController
 		$this->setTemplate('application/text');
 		$view = new ViewModel('application/index');
 		$view->addVariable('moduleName','INDEX');
-		$view->addVariable('body','SETTINGS');
+		$start = new \DateTime('2015-01-30');
+		$str = $start->format('Y-m-d');
+
+		$view->addVariable('body',$str);
 		return $view;
 	}
 
+
 	public function save(){
+
+
+
 		$this->getApplication()->getRequestHeader()->setVariable('Content-Type','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		$this->getApplication()->getRequestHeader()->setVariable('Content-Disposition','attachment;filename="01simple.xlsx"');
 		$this->getApplication()->getRequestHeader()->setVariable('Cache-Control','max-age=0');

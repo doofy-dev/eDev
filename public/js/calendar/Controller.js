@@ -138,9 +138,8 @@ app.controller("calendarCtrl", function ($scope, $filter, $http, $q, CalendarDat
 			for(var i=0;i<response.data.length;i++){
 				if(typeMap[response.data[i].entryName]==null)
 					typeMap[response.data[i].entryName] = 0;
-				response.data[i].end.hour = response.data[i].end.hour==0?24:response.data[i].end.hour;
 				typeMap[response.data[i].entryName]+=
-						((response.data[i].end.hour*60+response.data[i].end.min) -
+						(((response.data[i].end.hour==0?24:response.data[i].end.hour)*60+response.data[i].end.min) -
 						(response.data[i].start.hour*60+response.data[i].start.min))/60;
 				var day = $filter("date")(date, "y-MM-")+response.data[i].calendarDay;
 				if(typeof map[day]=='undefined') map[day] = $('<p/>').addClass('day-container');
