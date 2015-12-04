@@ -1,11 +1,8 @@
 
-[2015-11-25 07:56:17] The requested method "" in controller\alias "calendar" does not exists!
-[2015-11-25 07:58:07] The requested Controller: '' is not registered!
-[2015-11-25 07:58:22] The requested Controller: '' is not registered!
-[2015-11-25 07:58:23] The requested Controller: '' is not registered!
-[2015-11-25 07:58:24] The requested Controller: '' is not registered!
-[2015-11-25 07:58:24] The requested Controller: '' is not registered!
-[2015-11-25 08:08:15] The requested url has a bad route configuration!
-[2015-11-25 09:06:08] The requested url has a bad route configuration!
-[2015-11-25 09:46:23] The requested template (src/Application/view/layout.phtml) not found!
-[2015-11-25 10:26:54] The requested template (src/Application/view/layout.phtml) not found!
+[2015-12-04 13:07:41] DateTime::__construct() expects parameter 1 to be string, object given
+[2015-12-04 13:09:15] DateTime::__construct(): Failed to parse time string (30) at position 0 (3): Unexpected character
+[2015-12-04 13:09:17] DateTime::__construct(): Failed to parse time string (30) at position 0 (3): Unexpected character
+[2015-12-04 13:09:49] DateTime::__construct(): Failed to parse time string (30) at position 0 (3): Unexpected character
+[2015-12-04 13:09:50] DateTime::__construct(): Failed to parse time string (30) at position 0 (3): Unexpected character
+[2015-12-04 13:09:57] DateTime::__construct(): Failed to parse time string (30) at position 0 (3): Unexpected character
+[2015-12-04 13:09:58] DateTime::__construct(): Failed to parse time string (30) at position 0 (3): Unexpected character

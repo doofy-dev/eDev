@@ -1,5 +1,3 @@
 /public/bower_components
 .idea
-/log
-/composer.lock
 /vendor/
