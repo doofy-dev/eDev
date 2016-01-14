@@ -22,7 +22,7 @@ class CalendarRest extends RestFulController
 			}
 			$calendarRepo = $this->getEntityManager()->getRepository('Application\\Entity\\Calendar');
 			$result = $calendarRepo->getMonth($date);
-//			print_r($result);
+
 			return $result;
 		}
 		return array('type'=>'NOTHING SENT');

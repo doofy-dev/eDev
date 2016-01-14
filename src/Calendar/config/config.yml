@@ -13,3 +13,4 @@ invokable:
 
 view:
   calendar/container: "Calendar/view/container.phtml"
+  calendar/export: "Calendar/view/export.phtml"

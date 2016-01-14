@@ -14,16 +14,36 @@ use Doctrine\ORM\EntityRepository;
  */
 class CalendarRepository extends EntityRepository
 {
+	public function getFirstDate(){
+		$connection = $this->_em->createQueryBuilder();
+		$connection->select('c.calendarDay')
+			->from('Application\\Entity\\Calendar','c')
+			->orderBy('c.calendarDay','ASC')
+			->setMaxResults(1);
+		return $connection->getQuery()->getArrayResult()[0];
+	}
+	public function getMonthExportData(\DateTime $date){
+
+		$start = new \DateTime($date->format('Y-m').'-01');
+		$start2 = new \DateTime($date->format('Y-m').'-01');
+		return array(
+			'sum'=>$this->getMonthSum($start2),
+			'd'=>$this->getMonthOBJ($start)
+		);
+	}
 
 	/**
 	 * @param \DateTime $date
+	 * @return array
 	 */
 	public function getMonthSum(\DateTime $date)
 	{
 		$tempDate = $this->addMonth($date);
+
 		$sql = "
 			SELECT
 			  c.entry_type_id,
+			  c.entry_name,
 			  (SELECT SEC_TO_TIME(
 						  SUM(
 						  	TIME_TO_SEC(
@@ -38,10 +58,15 @@ class CalendarRepository extends EntityRepository
 			   WHERE (cs.calendar_day >= CAST('" . $date->format('Y-m') . "-01' AS DATE)
 					  AND cs.calendar_day < CAST('" . $tempDate->format('Y-m-d') . "' AS DATE))
 					 AND cs.entry_type_id = c.entry_type_id
-			  ) AS s
+			  ) AS entry_sum
 			FROM calendar_entry_type c
 			GROUP BY c.entry_type_id
 		";
+		$q = $this->_em->getConnection()->prepare($sql);
+		$q->execute();
+		return $q->fetchAll();
+
+
 	}
 
 	public function addMonth(\DateTime $date, $withDay = false)
@@ -171,14 +196,33 @@ class CalendarRepository extends EntityRepository
 		return $result;
 	}
 
+	public function getMonthOBJ(\DateTime $date){
+		$start = new \DateTime($date->format('Y-m') . '-01');
+		$end = $this->addMonth($start);
+		$connection = $this->_em->createQueryBuilder();
+		$connection->select('c')
+			->from('Application\\Entity\\Calendar', 'c')
+			->innerJoin('c.entryType', 't')
+			->leftJoin('c.task', 'j')
+			->leftJoin('c.project', 'p')
+//				->setMaxResults(2)
+			->where("c.calendarDay >= :start_date")
+			->andWhere("c.calendarDay < :end_date")
+			->setParameters(array(
+				'start_date' => $start->format('Y-m-d'),
+				'end_date' => $end->format('Y-m-d')
+			))->orderBy('c.calendarDay', 'ASC')->addOrderBy('c.startTime','ASC');
+		return $connection->getQuery()->getResult();
+	}
+
 	/**
 	 * @param \DateTime $date
 	 * @return \Application\Entity\Calendar[]
 	 */
 	public function getMonth(\DateTime $date)
 	{
-		$start = $date;
-		$end = (new \DateTime($date->format('Y-m-d')))->add(new \DateInterval('P1M'));
+		$start = new \DateTime($date->format('Y-m').'-01');
+		$end = $this->addMonth($start);
 		$connection = $this->_em->createQueryBuilder();
 		$connection->select('c.calendarId, c.startTime, c.endTime, c.calendarDay, t.entryTypeId, t.entryName, c.comment,
 		p.projectId as project, j.taskId as task')
@@ -187,12 +231,12 @@ class CalendarRepository extends EntityRepository
 			->leftJoin('c.task', 'j')
 			->leftJoin('c.project', 'p')
 //				->setMaxResults(2)
-			->where('c.calendarDay > :start_date')
-			->andWhere('c.calendarDay < :end_date')
+			->where("c.calendarDay >= :start_date")
+			->andWhere("c.calendarDay < :end_date")
 			->setParameters(array(
-				'start_date' => $start,
-				'end_date' => $end
-			));
+				'start_date' => $start->format('Y-m-d'),
+				'end_date' => $end->format('Y-m-d')
+			))->orderBy('c.calendarDay','ASC');
 		return $this->convert($connection->getQuery()->getArrayResult());
 	}
 

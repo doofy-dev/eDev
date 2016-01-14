@@ -2,7 +2,7 @@
  * Created by Tibi on 2015.11.25..
  */
 
-app.controller("calendarCtrl", function ($scope, $filter, $http, $q, CalendarData) {
+app.controller("calendarCtrl", ['$scope', '$filter', '$http', '$q', 'MaterialCalendarData',function ($scope, $filter, $http, $q, CalendarData) {
 	$scope.current_day = "Nincs kiválasztva";
 	$scope.dateContent = [];
 	$scope.database = [];
@@ -128,9 +128,10 @@ app.controller("calendarCtrl", function ($scope, $filter, $http, $q, CalendarDat
 			method: 'POST',
 			url: './calendarrest/getdata',
 			data: {
-				date: $filter("date")(date, "y-MM-") + '00'
+				date: $filter("date")(date, "y-MM-") + '01'
 			}
 		}).then(function (response) {
+			console.log(response);
 			$scope.$parent.isLoading = false;
 			$scope.database = response.data;
 			var map = {};
@@ -169,4 +170,4 @@ app.controller("calendarCtrl", function ($scope, $filter, $http, $q, CalendarDat
 		return '<p class="day-container"></p>';
 	};
 
-});
+}]);

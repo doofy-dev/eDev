@@ -276,4 +276,13 @@ class Calendar
     {
         return $this->user;
     }
+
+    public function toArray()
+    {
+        $res = array();
+        foreach ($this as $k => $v) {
+            $res[$k] = $v;
+        }
+        return $res;
+    }
 }

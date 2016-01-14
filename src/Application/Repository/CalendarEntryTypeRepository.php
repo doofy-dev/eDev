@@ -14,7 +14,7 @@ class CalendarEntryTypeRepository extends EntityRepository
 {
 	public function getList(){
 		$connection = $this->_em->createQueryBuilder();
-		$connection->select('t.entryName, t.entryTypeId')
+		$connection->select('t.entryName, t.entryTypeId, t.entryFormula, t.containsTime')
 			->from('Application\\Entity\\CalendarEntryType','t')
 			->orderBy('t.entryName','ASC');
 		return $connection->getQuery()->getArrayResult();

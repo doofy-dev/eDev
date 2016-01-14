@@ -35,7 +35,12 @@ class CalendarEntryType
      */
     private $entryFormula;
 
-
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="contains_time", type="integer", length=1, nullable=false)
+     */
+    private $containsTime;
 
     /**
      * Get entryTypeId
@@ -92,4 +97,22 @@ class CalendarEntryType
     {
         return $this->entryFormula;
     }
+
+    /**
+     * @return int
+     */
+    public function getContainsTime()
+    {
+        return $this->containsTime;
+    }
+
+    /**
+     * @param int $containsTime
+     */
+    public function setContainsTime($containsTime)
+    {
+        $this->containsTime = $containsTime;
+    }
+
+
 }
