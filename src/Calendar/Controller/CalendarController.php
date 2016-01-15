@@ -21,6 +21,7 @@ class CalendarController extends ActionController
     public function index()
     {
         $this->setTemplate('application/text');
+        $this->translator->setLocale('hu_HU');
         $view = new ViewModel("calendar/container");
 
 
@@ -82,7 +83,7 @@ class CalendarController extends ActionController
     public function settings()
     {
         $this->setTemplate('application/text');
-        $view = new ViewModel('application/index');
+        $view = new ViewModel('calendar/settings');
         $view->addVariable('moduleName', 'INDEX');
         $start = new \DateTime('2015-01-30');
         $str = $start->format('Y-m-d');

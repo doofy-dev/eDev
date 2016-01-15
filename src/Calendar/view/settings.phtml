@@ -1,0 +1,33 @@
+<span ng-controller="CalendarSettingsController" layout="row" layout-sm="column">
+    <div flex layout-padding>
+        <div flex layout layout-fill>
+            <md-content class="layout-fill ng-scope layout-column">
+                <md-toolbar>
+                    <div class="md-toolbar-tools layout-row">
+                        <div class="flex"></div>
+                        <h2 class="calendar-md-title"><span>Idő típusok</span></h2>
+
+                        <div class="flex" style="text-align: right">
+                            <!--BUTTONS HERE-->
+
+                        </div>
+                    </div>
+                </md-toolbar>
+                <md-content layout-padding layout="row" class="ng-scope flex"
+                            style="border: 1px solid rgba(0, 0, 0, 0.117647); min-height: 500px; max-height: 500px; overflow-y: auto;">
+                    <md-card layout='row' layout-padding flex
+                             ng-repeat="value in dateTypes track by $index">
+                    </md-card>
+                    <md-button ng-click=""
+                               class="md-warn md-fab md-fab-bottom-right fab-add">+
+                    </md-button>
+                </md-content>
+
+            </md-content>
+
+        </div>
+    </div>
+    <div flex layout-padding>
+
+    </div>
+</span>
