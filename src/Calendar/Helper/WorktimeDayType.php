@@ -9,14 +9,21 @@ namespace Calendar\Helper;
 
 
 use Application\Entity\Calendar;
+use decoy\log\Logger;
 
 class WorkTimeDayType
 {
-    private $start, $end, $sum, $comment;
+    private $start, $end, $sum, $comment, $poject, $task;
     public function __construct(Calendar $day)
     {
         $this->start = ($day->getStartTime()!=null?$day->getStartTime()->format('H:i'):'');
         $this->end = ($day->getEndTime()!=null?$day->getEndTime()->format('H:i'):'');
+        $logger = new Logger();
+        $this->poject = ($day->getProject()==null?null:$day->getProject()->getProjectName());
+        $this->task = ($day->getTask()==null?null:$day->getTask()->getTaskName());
+        $logger->Log('log/excel-project.txt', '------------');
+        $logger->Log('log/excel-project.txt', $this->poject);
+        $logger->Log('log/excel-project.txt', $this->task);
 
         if($day->getStartTime()!=null && $day->getEndTime()!=null) {
             $startH = intval($day->getStartTime()->format('H'));
@@ -36,6 +43,22 @@ class WorkTimeDayType
         $this->comment = $day->getComment();
         if($this->comment==null)
             $this->comment='';
+    }
+
+    /**
+     * @return string
+     */
+    public function getPoject()
+    {
+        return $this->poject;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTask()
+    {
+        return $this->task;
     }
 
     public function getTimeCell(){

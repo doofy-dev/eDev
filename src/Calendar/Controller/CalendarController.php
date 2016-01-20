@@ -13,6 +13,7 @@ use Calendar\Helper\WorkTimeDay;
 use Calendar\Helper\WorkTimeDayType;
 use Calendar\Helper\WorkTimeMonth;
 use decoy\base\ActionController;
+use decoy\log\Logger;
 use decoy\view\ViewModel;
 
 class CalendarController extends ActionController
@@ -39,7 +40,7 @@ class CalendarController extends ActionController
 
     public function export()
     {
-
+        $logger = new Logger();
         $this->setTemplate('application/text');
         $view = new ViewModel("calendar/export");
         if ($this->getRequest()->isPost()) {
@@ -57,7 +58,7 @@ class CalendarController extends ActionController
             $map = [];
             $prevDay = '';
             foreach ($dt as $d) {
-
+                $logger->Log('log/loop.txt',json_encode($d->toArray()));
                 if ($d->getStartTime() != null && $d->getEntryType()->getContainsTime() == 1) {
                     if ($prevDay == '' || $prevDay != $d->getCalendarDay()->format('Y-m-d')) {
                         if ($prevDay != $d->getCalendarDay()->format('Y-m-d') && $prevDay != '')
@@ -94,12 +95,8 @@ class CalendarController extends ActionController
 
     public function save(WorkTimeMonth $month)
     {
+        error_reporting(0);
 
-        $this->getApplication()->getRequestHeader()->setVariable('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $this->getApplication()->getRequestHeader()->setVariable('Content-Disposition', 'attachment;filename="Tálosi Tibor jelenléti ív (' . $month->getDateLabel() . ').xlsx"');
-        $this->getApplication()->getRequestHeader()->setVariable('Cache-Control', 'max-age=0');
-
-        $this->getApplication()->getRequestHeader()->setHeaders();
 
         $objPHPExcel = new \PHPExcel();
         $objPHPExcel->getProperties()->setCreator("eDev system")
@@ -111,8 +108,17 @@ class CalendarController extends ActionController
             ->setCategory("Worktime");
         $month->render($objPHPExcel);
         $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);
+
+        ob_end_clean();
+        $this->getApplication()->getRequestHeader()->setVariable('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $this->getApplication()->getRequestHeader()->setVariable('Content-Disposition', 'attachment;filename="Tálosi Tibor jelenléti ív (' . $month->getDateLabel() . ').xlsx"');
+        $this->getApplication()->getRequestHeader()->setVariable('Cache-Control', 'max-age=0');
+
+        $this->getApplication()->getRequestHeader()->setHeaders();
+
         $objWriter->setPreCalculateFormulas();
         $objWriter->save('php://output');
+
         $this->forward()->disableRender();
         return null;
     }

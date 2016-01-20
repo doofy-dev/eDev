@@ -6,6 +6,7 @@
  */
 
 namespace Calendar\Helper;
+use decoy\log\Logger;
 
 
 /**
@@ -62,6 +63,7 @@ class WorkTimeDay
 
     public function renderDay($startRow, \PHPExcel_Worksheet $page, array $timeStyle, array $sumStyle){
         $start = 1;
+        $logger = new Logger();
         foreach ($this->dataTypes as $key=>$dataTypeList) {
             $rowIndex = $startRow;
             $col1 = WorkTimeMonth::getNameFromNumber($start);
@@ -69,12 +71,26 @@ class WorkTimeDay
 
             foreach($dataTypeList as $dataType){
                 $page->setCellValue($col1 . $rowIndex, $dataType->getTimeCell());
-                $page->getCell($col1.$rowIndex)->getStyle()->applyFromArray($timeStyle);
+                $page->getCell($col1 . $rowIndex)->getStyle()->applyFromArray($timeStyle);
                 $page->setCellValue($col2 . $rowIndex, $dataType->getSum());
-                $page->getCell($col2.$rowIndex)->getStyle()->applyFromArray($sumStyle);
-                $page->mergeCells($col1.($rowIndex+1).':'.$col2.($rowIndex+1));
-                $page->setCellValue($col1.($rowIndex+1),$dataType->getComment());
-                $rowIndex+=2;
+                $page->getCell($col2 . $rowIndex)->getStyle()->applyFromArray($sumStyle);
+
+                //Project
+                if ($dataType->getPoject() != null)
+                    $page->setCellValue($col1 . ($rowIndex + 1), $dataType->getPoject());
+                else {
+                    $page->setCellValue($col1 . ($rowIndex + 1), 'Nincs projekthez rendelve');
+                }
+
+                if($dataType->getTask() != null)
+                       $page->setCellValue($col2 . ($rowIndex + 1),$dataType->getTask() . ')');
+
+                //Comments
+                $page->mergeCells($col1 . ($rowIndex + 2) . ':' . $col2 . ($rowIndex + 2));
+                $page->setCellValue($col1 . ($rowIndex + 2), $dataType->getComment());
+
+                $rowIndex += 3;
+
             }
             $start+=2;
         }
@@ -85,6 +101,6 @@ class WorkTimeDay
     }
 
     public function getHeight(){
-        return $this->height*2;
+        return $this->height*3;
     }
 }

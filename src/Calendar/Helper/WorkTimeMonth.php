@@ -45,10 +45,10 @@ class WorkTimeMonth
                 'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
                 'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER
             ),
-            'borders'=>array(
-                'allborders'=>array(
-                    'style'=>PHPExcel_Style_Border::BORDER_THIN,
-                    'color'=>array('argb'=>'000000')
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN,
+                    'color' => array('argb' => '000000')
                 )
             )
 
@@ -72,7 +72,7 @@ class WorkTimeMonth
                 'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
             )
         ),
-        'typeLabel'=>array(
+        'typeLabel' => array(
             'alignment' => array(
                 'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
             )
@@ -128,9 +128,10 @@ class WorkTimeMonth
      * @param $id
      * @return string
      */
-    private function getTypeLabel($id){
-        foreach($this->dayTypeSettings as $dt){
-            if($dt['entryTypeId']==$id)
+    private function getTypeLabel($id)
+    {
+        foreach ($this->dayTypeSettings as $dt) {
+            if ($dt['entryTypeId'] == $id)
                 return $dt['entryName'];
         }
         return 'N/A';
@@ -140,9 +141,10 @@ class WorkTimeMonth
      * @param $id
      * @return null
      */
-    private function getType($id){
+    private function getType($id)
+    {
         foreach ($this->dayTypeSettings as $dayTypeSetting) {
-            if($dayTypeSetting['entryTypeId']==$id)
+            if ($dayTypeSetting['entryTypeId'] == $id)
                 return $dayTypeSetting;
         }
         return null;
@@ -168,80 +170,96 @@ class WorkTimeMonth
 
         $page->mergeCells('A1:B1');
         $page->getColumnDimension('A')->setWidth(15);
-        $page->setCellValue('A1','Tálosi Tibor');
+        $page->setCellValue('A1', 'Tálosi Tibor');
 
         $page->mergeCells('A2:C2');
-        $page->setCellValue('A2', 'Jelenléti ív: '.$this->date->format('Y').'. év '.$this->date->format('m').'. hó');
+        $page->setCellValue('A2', 'Jelenléti ív: ' . $this->date->format('Y') . '. év ' . $this->date->format('m') . '. hó');
 
 
-        for($i=0;$i<count(WorkTimeDay::$dayMap);$i++){
-            $col1 = WorkTimeMonth::getNameFromNumber($i*2+1);
-            $col2 = WorkTimeMonth::getNameFromNumber($i*2+2);
-            $page->setCellValue($col1 . '4', 'Idő');
-            $page->getCell($col1 . '4')->getStyle()->applyFromArray($this->styleSettings['black']);
-            $page->getColumnDimension($col1)->setWidth(15);
-            $page->setCellValue($col2 . '4', 'Óra');
-            $page->getCell($col2 . '4')->getStyle()->applyFromArray($this->styleSettings['black']);
-            $page->mergeCells($col1 . '3:' . $col2 . '3');
-            $page->setCellValue($col1 . '3', $this->getTypeLabel(WorkTimeDay::$dayMap[$i]));
-            $page->getCell($col1.'3')->getStyle()->applyFromArray($this->styleSettings['typeLabel']);
+        for ($i = 0; $i < count(WorkTimeDay::$dayMap); $i++) {
+            try {
+                $col1 = WorkTimeMonth::getNameFromNumber($i * 2 + 1);
+                $col2 = WorkTimeMonth::getNameFromNumber($i * 2 + 2);
+                $page->setCellValue($col1 . '4', 'Idő');
+                $page->getCell($col1 . '4')->getStyle()->applyFromArray($this->styleSettings['black']);
+                $page->getColumnDimension($col1)->setWidth(15);
+                $page->setCellValue($col2 . '4', 'Óra');
+                $page->getCell($col2 . '4')->getStyle()->applyFromArray($this->styleSettings['black']);
+                $page->mergeCells($col1 . '3:' . $col2 . '3');
+                $page->setCellValue($col1 . '3', $this->getTypeLabel(WorkTimeDay::$dayMap[$i]));
+                $page->getCell($col1 . '3')->getStyle()->applyFromArray($this->styleSettings['typeLabel']);
+            } catch (\Exception $e) {
+                Logger::Log('log/excel-day-loop.txt', $e->getMessage());
+            }
         }
 
         foreach ($this->days as $day) {
-            $dayLabel = $day->getDay();
-            $page->setCellValue('A'.$rowStart,$dayLabel);
-            $page->getStyle('A' . $rowStart)->applyFromArray($this->styleSettings['datelabel']);
-            $page->mergeCells('A'.$rowStart.':A'.($rowStart+$day->getHeight()-1));
-            $day->renderDay($rowStart, $page, $this->styleSettings['timelabel'], $this->styleSettings['sumlabel']);
-            $rowStart += $day->getHeight();
+            try {
+                $dayLabel = $day->getDay();
+                $page->setCellValue('A' . $rowStart, $dayLabel);
+                $page->getStyle('A' . $rowStart)->applyFromArray($this->styleSettings['datelabel']);
+                $page->mergeCells('A' . $rowStart . ':A' . ($rowStart + $day->getHeight() - 1));
+                $day->renderDay($rowStart, $page, $this->styleSettings['timelabel'], $this->styleSettings['sumlabel']);
+                $rowStart += $day->getHeight();
+            } catch
+            (\Exception $e) {
+                Logger::Log('log/excel-day-loop.txt', $e->getMessage());
+            }
         }
+
 
         $page->setCellValue('A' . ($rowStart), 'Összeg (óra)');
 
 
-
-
         $logger->Log('log/excel.txt', 'all type: ' . json_encode(WorkTimeDay::$dayMap));
         $sum = [];
-        for($i=0;$i<count(WorkTimeDay::$dayMap);$i++){
-            $row = WorkTimeMonth::getNameFromNumber(2 + $i * 2);
-            $dayType = $this->getType(WorkTimeDay::$dayMap[$i]);
-            $page->setCellValue($row.($rowStart),'=SUM('. $row.$startFrom.':'. $row.($rowStart-1).')');
-            $sum[$dayType['entryTypeId']]=$row.($rowStart);
-//            getCell('B10')->getCalculatedValue()
-        }
-        $logger->Log('log/excel.txt', 'sum'.json_encode($sum));
-
-        //Rendering overall sum
-        $id=0;
-        $formulaMap=[];
-        for($i=0;$i<count(WorkTimeDay::$dayMap);$i++){
-            $dayType = $this->getType(WorkTimeDay::$dayMap[$i]);
-            $logger->Log('log/excel.txt', 'parsing daytype: ' . json_encode($dayType));
-
-            $ID = $dayType['entryTypeId'];
-
-            if($dayType['entryFormula']!=null){
-                $this->getOrCreateFormula($formulaMap,$ID);
-                $logger->Log('log/excel.txt', 'parsing formula: ' . $dayType['entryFormula']);
-
-                if(strpos($dayType['entryFormula'], '<<')>0){
-                    $exp = explode('<<',$dayType['entryFormula']);
-                    $otherID = str_replace('$','',$exp[0]);
-                    $this->getOrCreateFormula($formulaMap,$otherID);
-                    $this->addFormula($formulaMap[$otherID],$exp[1], $sum);
-                    $logger->Log('log/excel.txt', 'adding to other: ' . $formulaMap[$otherID] . ' -> ' . $ID . '=>' . $otherID);
-                }else{
-                    $this->addFormula($formulaMap[$ID],$dayType['entryFormula'],$sum);
-                    $logger->Log('log/excel.txt', 'adding to self: ' . $formulaMap[$ID]." -> ".$ID);
-                    $id++;
-                }
+        for ($i = 0; $i < count(WorkTimeDay::$dayMap); $i++) {
+            try {
+                $row = WorkTimeMonth::getNameFromNumber(2 + $i * 2);
+                $dayType = $this->getType(WorkTimeDay::$dayMap[$i]);
+                $page->setCellValue($row . ($rowStart), '=SUM(' . $row . $startFrom . ':' . $row . ($rowStart - 1) . ')');
+                $sum[$dayType['entryTypeId']] = $row . ($rowStart);
+//            getCell('B10')->getCalculatedValue()5
+            } catch (\Exception $e) {
+                Logger::Log('log/excel-day-loop.txt', $e->getMessage());
             }
         }
-        $logger->Log('log/excel.txt','map'.json_encode($formulaMap));
-        $i=0;
-        foreach($formulaMap as $ID=>$formula){
-            if($formula!='='){
+        $logger->Log('log/excel.txt', 'sum' . json_encode($sum));
+
+        //Rendering overall sum
+        $id = 0;
+        $formulaMap = [];
+        for ($i = 0; $i < count(WorkTimeDay::$dayMap); $i++) {
+            try {
+                $dayType = $this->getType(WorkTimeDay::$dayMap[$i]);
+                $logger->Log('log/excel.txt', 'parsing daytype: ' . json_encode($dayType));
+
+                $ID = $dayType['entryTypeId'];
+
+                if ($dayType['entryFormula'] != null) {
+                    $this->getOrCreateFormula($formulaMap, $ID);
+                    $logger->Log('log/excel.txt', 'parsing formula: ' . $dayType['entryFormula']);
+
+                    if (strpos($dayType['entryFormula'], '<<') > 0) {
+                        $exp = explode('<<', $dayType['entryFormula']);
+                        $otherID = str_replace('$', '', $exp[0]);
+                        $this->getOrCreateFormula($formulaMap, $otherID);
+                        $this->addFormula($formulaMap[$otherID], $exp[1], $sum);
+                        $logger->Log('log/excel.txt', 'adding to other: ' . $formulaMap[$otherID] . ' -> ' . $ID . '=>' . $otherID);
+                    } else {
+                        $this->addFormula($formulaMap[$ID], $dayType['entryFormula'], $sum);
+                        $logger->Log('log/excel.txt', 'adding to self: ' . $formulaMap[$ID] . " -> " . $ID);
+                        $id++;
+                    }
+                }
+            } catch (\Exception $e) {
+                Logger::Log('log/excel-day-loop.txt', $e->getMessage());
+            }
+        }
+        $logger->Log('log/excel.txt', 'map' . json_encode($formulaMap));
+        $i = 0;
+        foreach ($formulaMap as $ID => $formula) {
+            if ($formula != '=') {
                 $page->setCellValue($this->getNameFromNumber($i) . ($rowStart + 4), $this->getTypeLabel($ID));
                 $page->setCellValue($this->getNameFromNumber($i) . ($rowStart + 5), $formula);
                 $i++;
@@ -256,9 +274,10 @@ class WorkTimeMonth
      * @param $array
      * @param $key
      */
-    private function getOrCreateFormula(& $array, $key){
-        if(array_key_exists($key,$array)==false)
-            $array[$key]="=";
+    private function getOrCreateFormula(& $array, $key)
+    {
+        if (array_key_exists($key, $array) == false)
+            $array[$key] = "=";
     }
 
     /**
@@ -267,19 +286,20 @@ class WorkTimeMonth
      * @param $map
      * @return string
      */
-    private function addFormula(& $string, $expression, & $map){
+    private function addFormula(& $string, $expression, & $map)
+    {
         $logger = new Logger();
-        $string.=($string=="="?"(":"+(");
+        $string .= ($string == "=" ? "(" : "+(");
 //        $keys = [];
 //        preg_match('/(\$(\d+))*/g', $expression, $keys, PREG_OFFSET_CAPTURE);
 //        $logger->Log('log/excel.txt', 'keys: ' . json_encode($keys). ' in expression: '.$expression);
         $str = $expression;
-        foreach($map as $key=>$row){
-            $logger->Log('log/excel.txt', 'AddFormula: ' . $key);
-            $str = str_replace('$'.$key,$row, $str);
+        foreach ($map as $key => $row) {
+//            $logger->Log('log/excel.txt', 'AddFormula: ' . $key);
+            $str = str_replace('$' . $key, $row, $str);
         }
 
-        $string.=$str.")";
+        $string .= $str . ")";
     }
 
     /**
@@ -288,18 +308,20 @@ class WorkTimeMonth
      * @param $num
      * @return string
      */
-    public static function getNameFromNumber($num){
-        $numeric = $num%26;
-        $letter = chr(65+$numeric);
-        $num2 = intval($num/26);
-        if($num2>0){
-            return WorkTimeMonth::getNameFromNumber($num2-1).$letter;
-        }else{
+    public static function getNameFromNumber($num)
+    {
+        $numeric = $num % 26;
+        $letter = chr(65 + $numeric);
+        $num2 = intval($num / 26);
+        if ($num2 > 0) {
+            return WorkTimeMonth::getNameFromNumber($num2 - 1) . $letter;
+        } else {
             return $letter;
         }
     }
 
-    public function getDateLabel(){
+    public function getDateLabel()
+    {
         return $this->date->format('Y-m-d');
     }
 

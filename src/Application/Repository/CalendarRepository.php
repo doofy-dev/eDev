@@ -200,7 +200,7 @@ class CalendarRepository extends EntityRepository
 		$start = new \DateTime($date->format('Y-m') . '-01');
 		$end = $this->addMonth($start);
 		$connection = $this->_em->createQueryBuilder();
-		$connection->select('c')
+		$connection->select('c, p, j')
 			->from('Application\\Entity\\Calendar', 'c')
 			->innerJoin('c.entryType', 't')
 			->leftJoin('c.task', 'j')
