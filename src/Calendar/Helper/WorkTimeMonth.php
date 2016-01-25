@@ -161,7 +161,7 @@ class WorkTimeMonth
     /**
      * @param \PHPExcel $sheet
      */
-    public function render(\PHPExcel $sheet)
+    public function render(\PHPExcel &$sheet)
     {
         $logger = new Logger();
         $rowStart = 5;
@@ -199,7 +199,7 @@ class WorkTimeMonth
                 $page->setCellValue('A' . $rowStart, $dayLabel);
                 $page->getStyle('A' . $rowStart)->applyFromArray($this->styleSettings['datelabel']);
                 $page->mergeCells('A' . $rowStart . ':A' . ($rowStart + $day->getHeight() - 1));
-                $day->renderDay($rowStart, $page, $this->styleSettings['timelabel'], $this->styleSettings['sumlabel']);
+                $day->renderDay($rowStart, $sheet, $this->styleSettings['timelabel'], $this->styleSettings['sumlabel']);
                 $rowStart += $day->getHeight();
             } catch
             (\Exception $e) {
@@ -213,6 +213,7 @@ class WorkTimeMonth
 
         $logger->Log('log/excel.txt', 'all type: ' . json_encode(WorkTimeDay::$dayMap));
         $sum = [];
+
         for ($i = 0; $i < count(WorkTimeDay::$dayMap); $i++) {
             try {
                 $row = WorkTimeMonth::getNameFromNumber(2 + $i * 2);
@@ -258,14 +259,20 @@ class WorkTimeMonth
         }
         $logger->Log('log/excel.txt', 'map' . json_encode($formulaMap));
         $i = 0;
+        $summa =array(
+            array('Összesen'),
+            array(),
+            array()
+        );
         foreach ($formulaMap as $ID => $formula) {
             if ($formula != '=') {
-                $page->setCellValue($this->getNameFromNumber($i) . ($rowStart + 4), $this->getTypeLabel($ID));
-                $page->setCellValue($this->getNameFromNumber($i) . ($rowStart + 5), $formula);
+                $summa[1][]=$this->getTypeLabel($ID);
+                $summa[2][]= $formula;
                 $i++;
             }
         }
-        $page->setCellValue('A' . ($rowStart + 3), 'Összesen');
+        $page->fromArray($summa, NULL, 'A' . ($rowStart + 3));
+
         $page->getCell('A' . ($rowStart + 3))->getStyle()->applyFromArray($this->styleSettings['black']);
         $page->mergeCells('A' . ($rowStart + 3) . ':' . WorkTimeMonth::getNameFromNumber($i - 1) . ($rowStart + 3));
     }

@@ -19,8 +19,8 @@ class WorkTimeDayType
         $this->start = ($day->getStartTime()!=null?$day->getStartTime()->format('H:i'):'');
         $this->end = ($day->getEndTime()!=null?$day->getEndTime()->format('H:i'):'');
         $logger = new Logger();
-        $this->poject = ($day->getProject()==null?null:$day->getProject()->getProjectName());
-        $this->task = ($day->getTask()==null?null:$day->getTask()->getTaskName());
+        $this->poject = ($day->getProject()==null?'':$day->getProject()->getProjectName());
+        $this->task = ($day->getTask()==null?'':$day->getTask()->getTaskName());
         $logger->Log('log/excel-project.txt', '------------');
         $logger->Log('log/excel-project.txt', $this->poject);
         $logger->Log('log/excel-project.txt', $this->task);

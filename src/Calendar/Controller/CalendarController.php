@@ -15,6 +15,8 @@ use Calendar\Helper\WorkTimeMonth;
 use decoy\base\ActionController;
 use decoy\log\Logger;
 use decoy\view\ViewModel;
+use PHPExcel_CachedObjectStorageFactory;
+use PHPExcel_Settings;
 
 class CalendarController extends ActionController
 {
@@ -95,9 +97,17 @@ class CalendarController extends ActionController
 
     public function save(WorkTimeMonth $month)
     {
-        error_reporting(0);
+        ob_start();
+//        error_reporting(E_ALL);
+//        ini_set('display_errors', TRUE);
+//        ini_set('display_startup_errors', TRUE);
 
-
+        ini_set('memory_limit', '512M');
+        ini_set('max_execution_time', '10000');
+        set_time_limit(10000);
+        $cacheMethod = PHPExcel_CachedObjectStorageFactory:: cache_to_phpTemp;
+        $cacheSettings = array('memoryCacheSize' => '512M');
+        PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
         $objPHPExcel = new \PHPExcel();
         $objPHPExcel->getProperties()->setCreator("eDev system")
             ->setLastModifiedBy("eDev system")
@@ -107,18 +117,27 @@ class CalendarController extends ActionController
             ->setKeywords("office 2007 openxml php edev")
             ->setCategory("Worktime");
         $month->render($objPHPExcel);
+
+//        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
         $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);
-
-        ob_end_clean();
+//
         $this->getApplication()->getRequestHeader()->setVariable('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $this->getApplication()->getRequestHeader()->setVariable('Content-Disposition', 'attachment;filename="Tálosi Tibor jelenléti ív (' . $month->getDateLabel() . ').xlsx"');
+////        $this->getApplication()->getRequestHeader()->setVariable('Content-Type', 'text/csv');
+//        $this->getApplication()->getRequestHeader()->setVariable('Content-Disposition', 'attachment;filename="Tálosi Tibor jelenléti ív (' . $month->getDateLabel() . ').xlsx"');
         $this->getApplication()->getRequestHeader()->setVariable('Cache-Control', 'max-age=0');
-
+//
         $this->getApplication()->getRequestHeader()->setHeaders();
 
         $objWriter->setPreCalculateFormulas();
-        $objWriter->save('php://output');
+        ob_end_clean();
+//        echo '<pre>';
+//        var_dump($objPHPExcel);
+//        echo '</pre>';
 
+
+        Logger::Log('log/memory.txt', "Memory usage: " . (memory_get_peak_usage(true) / 1024 / 1024) . " MB");
+//        $objWriter->save('php://output');
+        $objWriter->save('export/TT_woktime (' . $month->getDateLabel() . ').xlsx');
         $this->forward()->disableRender();
         return null;
     }

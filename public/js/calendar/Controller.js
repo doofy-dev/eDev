@@ -6,7 +6,7 @@ app.controller("calendarCtrl", ['$scope', '$filter', '$http', '$q', 'MaterialCal
 	$scope.current_day = "Nincs kiválasztva";
 	$scope.dateContent = [];
 	$scope.database = [];
-
+	//$scope.selectedmonth = parseInt(date.format('M'))
 	$scope.dateMap = [];
 	$scope.sum = [
 	];
