@@ -1,3 +1,11 @@
-/public/bower_components
+/public/bower_components/angular-messages
+/public/bower_components/angular-animate
+/public/bower_components/angular-material
+/public/bower_components/angular-aria
+/public/bower_components/jquery
+/public/bower_components/angular
+/public/bower_components/angular-material-icons
+/public/bower_components/material-calendar
+/public/bower_components/angular-sanitize
 .idea
 /vendor/
