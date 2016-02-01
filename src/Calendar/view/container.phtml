@@ -1,4 +1,8 @@
 <!--https://angular-material-calendar.bradb.net/-->
+<?php $this->headScript()
+	->prependFile('bower_components/flot/jquery.flot.selection.js')
+	->prependFile('bower_components/flot/jquery.flot.time.js')
+	->prependFile('bower_components/flot/jquery.flot.js'); ?>
 <span ng-controller="calendarCtrl" layout="row" layout-sm="column">
 	<div flex layout-padding>
 		<div flex layout layout-fill>
@@ -15,6 +19,12 @@
 					</div>
 				</md-toolbar>
 				<md-content layout-padding layout="row" class="calendar ng-scope flex"
+							style="border: 1px solid rgba(0, 0, 0, 0.117647); min-height: 100px; ">
+					<div class="summary_page" style="width:100%;" summary-graph ng-model="summary">
+					</div>
+					<span class="legend"></span>
+				</md-content>
+				<md-content layout-padding layout="row" class="calendar ng-scope flex"
 							style="border: 1px solid rgba(0, 0, 0, 0.117647); min-height: 100px; max-height: 100px; overflow-y: auto;">
 					<div class="md-list-item-text" ng-repeat="s in sum" flex>
 						<h3> {{ s.number }} óra</h3>
@@ -22,6 +32,7 @@
 					</div>
 
 				</md-content>
+
 			</md-content>
 		</div>
 

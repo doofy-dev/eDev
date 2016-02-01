@@ -61,38 +61,44 @@ class WorkTimeDay
         }
     }
 
-    public function renderDay($startRow, \PHPExcel_Worksheet $page, array $timeStyle, array $sumStyle){
+    public function renderDay($startRow, \PHPExcel &$sheet, array $timeStyle, array $sumStyle){
         $start = 1;
         $logger = new Logger();
-        foreach ($this->dataTypes as $key=>$dataTypeList) {
+        $page = $sheet->getActiveSheet();
+
+        $data = array();
+
+        $startCol = WorkTimeMonth::getNameFromNumber($start);
+        foreach ($this->dataTypes as $key => $dataTypeList){
             $rowIndex = $startRow;
             $col1 = WorkTimeMonth::getNameFromNumber($start);
-            $col2 = WorkTimeMonth::getNameFromNumber($start+1);
-
-            foreach($dataTypeList as $dataType){
-                $page->setCellValue($col1 . $rowIndex, $dataType->getTimeCell());
+            $col2 = WorkTimeMonth::getNameFromNumber($start + 1);
+            foreach ($dataTypeList as $dataType) {
                 $page->getCell($col1 . $rowIndex)->getStyle()->applyFromArray($timeStyle);
-                $page->setCellValue($col2 . $rowIndex, $dataType->getSum());
                 $page->getCell($col2 . $rowIndex)->getStyle()->applyFromArray($sumStyle);
+                $data[] = array($dataType->getTimeCell(), $dataType->getSum());
+//
+                $data[] = array(($dataType->getPoject()==''? '':($dataType->getPoject(). ($dataType->getTask() == '' ? '' : "(" . $dataType->getTask() . ")"))), null);
+//                $data[]=array('asdasd');
+//                $logger->Log('log/asd.txt', gettype($dataType->getComment()).' -> '. $dataType->getComment());
 
-                //Project
-                if ($dataType->getPoject() != null)
-                    $page->setCellValue($col1 . ($rowIndex + 1), $dataType->getPoject());
-                else {
-                    $page->setCellValue($col1 . ($rowIndex + 1), 'Nincs projekthez rendelve');
-                }
 
-                if($dataType->getTask() != null)
-                       $page->setCellValue($col2 . ($rowIndex + 1),$dataType->getTask() . ')');
-
-                //Comments
+                $data[] = array((
+                ($dataType->getComment()=='' || $dataType->getComment()==null)?'': $dataType->getComment()), null);
+//
+                $page->mergeCells($col1 . ($rowIndex + 1) . ':' . $col2 . ($rowIndex + 1));
                 $page->mergeCells($col1 . ($rowIndex + 2) . ':' . $col2 . ($rowIndex + 2));
-                $page->setCellValue($col1 . ($rowIndex + 2), $dataType->getComment());
-
-                $rowIndex += 3;
-
+                $rowIndex+=3;
             }
-            $start+=2;
+        }
+
+        $logger->Log('log/expor.txt', 'saving starts at: ' . $startCol . $startRow);
+
+        $logger->Log('log/expor.txt', json_encode($data, JSON_PRETTY_PRINT));
+        try{
+            $page->fromArray($data, NULL, $startCol . $startRow);
+        }catch(\Exception $e){
+            $logger->Log('log/err.txt', $e->getMessage());
         }
     }
 

@@ -152,3 +152,20 @@ calendar-md div.layout-row>.ng-binding:first-child:not(.subheader-day){
 		padding-right: 10px;
 	}
 }
+.legend table{
+	position:absolute;
+	top: 0px;
+	right: 0px;;
+	font-size: smaller;
+	color: #545454
+}
+
+.legend{
+	position: relative;
+	top:-40px;
+	margin-top: 40px;
+}
+
+.legend tr{
+	display: inline-block;
+}

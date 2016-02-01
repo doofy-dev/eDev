@@ -10,6 +10,7 @@ app.controller("calendarCtrl", ['$scope', '$filter', '$http', '$q', 'MaterialCal
 	$scope.dateMap = [];
 	$scope.sum = [
 	];
+	$scope.summary=[];
 	$scope.dataGet=false;
 	var date = Date.now();
 
@@ -21,6 +22,7 @@ app.controller("calendarCtrl", ['$scope', '$filter', '$http', '$q', 'MaterialCal
 		$scope.$parent.isLoading = false;
 		$scope.dayTypes = response.data;
 	});
+
 
 	$scope.projects = [];
 	$http({
@@ -43,7 +45,7 @@ app.controller("calendarCtrl", ['$scope', '$filter', '$http', '$q', 'MaterialCal
 	$scope.dayFormat = "d";
 	$scope.dayValues = {};
 	// To select a single date, make sure the ngModel is not an array.
-	$scope.selectedDate = Date.now();
+	$scope.selectedDate = new Date();
 
 	//// If you want multi-date select, initialize it as an array.
 	//$scope.selectedDate = Date.now();
@@ -158,9 +160,24 @@ app.controller("calendarCtrl", ['$scope', '$filter', '$http', '$q', 'MaterialCal
 					type: key,
 					number: typeMap[key].toFixed(2)
 				});
-			console.log(typeMap)
+			console.log(typeMap);
+			loadGraph($filter("date")(date, "y-MM-") + '01');
 		});
 	}
+
+	function loadGraph(date){
+		$scope.$parent.isLoading = true;
+		$http({
+			method: 'POST',
+			url: './calendarrest/getsummary',
+			data: {'date':date}
+		}).then(function (response) {
+			console.log('graph',date,response.data);
+			$scope.$parent.isLoading = false;
+			$scope.summary = response.data;
+		});
+	}
+
 	function clearTable(){
 		for(var i=0;i<$scope.dateMap.length;i++)
 			CalendarData.setDayContent($scope.dateMap[i],'<p class="day-container"></p>');

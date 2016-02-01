@@ -10,9 +10,70 @@ namespace Calendar\Controller;
 
 
 use decoy\base\RestFulController;
+use decoy\log\Logger;
 
 class CalendarRest extends RestFulController
 {
+
+	public function getsummary()
+	{
+		$date = new \DateTime();
+		$sent = $this->getApplication()->getRequestBody()->content;
+		if (array_key_exists('date', $sent)) {
+			$date = new \DateTime($sent['date']);
+		}
+		$calendarRepo = $this->getEntityManager()->getRepository('Application\\Entity\\Calendar');
+		$result = $calendarRepo->getMonth($date);
+
+		$map = array();
+
+		foreach ($result as $item) {
+			$id=-1;
+			for($i=0;$i<count($map);$i++){
+				if($map[$i]['label']==$item['entryName']) {
+					$id=$i;
+					break;
+				}
+			}
+			if($id==-1) {
+				$map[] = array('label' => $item['entryName'], 'data' => array());
+				$id = count($map)-1;
+			}
+			if($item['end']['hour'] == "" && $item['end']['min'] == "" && $item['start']['hour'] == "" && $item['start']['min'] == "")
+			{
+				$item['end']['hour'] = 0;
+				$item['end']['min'] = 0;
+				$item['start']['hour'] = 0;
+				$item['start']['min'] = 0;
+			}
+			if ($item['end']['hour'] == "" && $item['start']['hour'] != "") $item['end']['hour'] = 24;
+			if ($item['end']['min'] == "") $item['end']['min'] = 0;
+			if ($item['start']['hour'] == "") $item['start']['hour'] = 0;
+			if ($item['start']['min'] == "") $item['start']['min'] = 0;
+			$mID=-1;
+			for($i=0;$i<count($map[$id]['data']);$i++){
+				if($map[$id]['data'][$i][0]== $item['calendarDay']){
+					$mID = $i;
+					break;
+				}
+			}
+			$sim = ($item['end']['hour'] + $item['end']['min'] / 60) - ($item['start']['hour'] + $item['start']['min'] / 60);
+			if($mID==-1){
+				$map[$id]['data'][] = array($item['calendarDay'], $sim);
+			}
+			else{
+				$map[$id]['data'][$mID][1] += $sim;
+			}
+		}
+
+
+		Logger::Log('log/log.txt',json_encode($result,JSON_PRETTY_PRINT));
+	return $map;
+			return array(
+			array('label'=>'alma','data'=>array(array(1445767860000, 20), array(1445860800000, 30)))
+		);
+	}
+
 	public function getdata(){
 		if($this->getRequest()->isPost()){
 			$sent = $this->getApplication()->getRequestBody()->content;
