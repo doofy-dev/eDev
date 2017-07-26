@@ -9,7 +9,6 @@
     "angular": "master",
     "angular-animate": "^1.4.6",
     "angular-aria": "^1.4.6",
-    "angular-material": "^1.0.0",
     "angular-material-icons": "^0.4.0",
     "material-calendar": "master",
     "jquery": "~2"

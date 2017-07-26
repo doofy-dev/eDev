@@ -75,6 +75,8 @@ class CalendarRest extends RestFulController
 	}
 
 	public function getdata(){
+
+        set_time_limit(60);
 		if($this->getRequest()->isPost()){
 			$sent = $this->getApplication()->getRequestBody()->content;
 			$date = new \DateTime();
@@ -83,7 +85,7 @@ class CalendarRest extends RestFulController
 			}
 			$calendarRepo = $this->getEntityManager()->getRepository('Application\\Entity\\Calendar');
 			$result = $calendarRepo->getMonth($date);
-
+		
 			return $result;
 		}
 		return array('type'=>'NOTHING SENT');

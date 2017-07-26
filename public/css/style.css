@@ -15,7 +15,10 @@ html, body {
 
 /* Toolbar area */
 
-
+.layout-fill{
+	min-height:0px !important;
+	height: auto !important;
+}
 md-toolbar h1 {
 	margin: auto;
 }
@@ -63,6 +66,15 @@ md-item-content{
 }
 .child-menu{
 	padding-left: 30px;
+}
+
+.top-picture{
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	margin-left: 20px;
+	overflow: hidden;
+	border-radius: 50% !important;
 }
 .profile-section .picture{
 	display: inline-block;

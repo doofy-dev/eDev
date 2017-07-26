@@ -236,7 +236,8 @@ class CalendarRepository extends EntityRepository
 			->setParameters(array(
 				'start_date' => $start->format('Y-m-d'),
 				'end_date' => $end->format('Y-m-d')
-			))->orderBy('c.calendarDay','ASC');
+			))->orderBy('c.calendarDay','ASC')
+        ->addOrderBy('c.startTime','ASC');
 		return $this->convert($connection->getQuery()->getArrayResult());
 	}
 

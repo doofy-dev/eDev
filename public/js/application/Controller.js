@@ -1,7 +1,7 @@
 /**
  * Created by Tibi on 2015.11.25..
  */
-app.controller('Application',function($mdSidenav,$scope){
+app.controller('Application',function($mdSidenav,$scope,$timeout){
 	$scope.toggleSidenav = function(menuId) {
 		$mdSidenav(menuId).toggle();
 	};
@@ -81,7 +81,12 @@ app.controller('Application',function($mdSidenav,$scope){
 			icon:'close'
 		}
 	];
-
+    var date = new Date();
+    $timeout(function () {
+        $scope.year = date.getFullYear();
+        var m =  date.getMonth()+1;
+        $scope.month = (m<10?'0':'0')+m;
+    });
 	$scope.toRoute = function(entity){
 		location.href = entity.url;
 		//history.pushState({route:entity.url},entity.title,entity.url);

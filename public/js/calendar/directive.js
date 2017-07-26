@@ -37,7 +37,7 @@ app.directive("summaryGraph",[function(){
 			if (item) {
 				var x = item.datapoint[0],
 					y = item.datapoint[1].toFixed(2);
-				$("._tooltip").html((parseInt(y)==0?'Egész nap': (y + " óra") ))
+				$("._tooltip").html((parseFloat(y)===0?'Egész nap': (y + " óra") ))
 					.css({'top': item.pageY - 20, 'left': item.pageX + 5})
 					.show(200);
 			} else {
@@ -76,7 +76,7 @@ app.directive('timeTracker', ['$compile', function ($compile) {
 			});
 			var button = $compile(
 				'<md-button ng-click="add()" style="margin-bottom: -10px" class="md-warn md-fab md-fab-bottom-right fab-add">+</md-button>')($scope);
-			$element.append(button);
+		$element.append(button);
 
 			$scope.$watch(function () {
 				return ngModel.$modelValue;

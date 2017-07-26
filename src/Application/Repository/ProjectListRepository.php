@@ -21,7 +21,9 @@ class ProjectListRepository extends EntityRepository
 				->innerJoin('m.project', 'p')
 				->innerJoin('m.user','u')
 				->where('u.userId = :UID')
-				->setParameter('UID',$userID);
+				->setParameter('UID',$userID)
+				->orderBy('p.ordering','ASC')
+				->addOrderBy('p.projectId','ASC');
 		return $connection->getQuery()->getArrayResult();
 	}
 

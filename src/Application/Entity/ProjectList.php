@@ -2,8 +2,6 @@
 
 namespace Application\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * ProjectList
  *
@@ -27,7 +25,12 @@ class ProjectList
      * @ORM\Column(name="project_name", type="text", length=65535, nullable=false)
      */
     private $projectName;
-
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="ordering", type="integer")
+     */
+    private $ordering;
     /**
      * @var string
      *
